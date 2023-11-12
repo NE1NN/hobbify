@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
   detailsContainer: {
     justifyContent: 'center',
     gap: 20,
+    marginLeft: 15
   },
   eventName: {
     fontWeight: 'bold',
@@ -41,5 +42,7 @@ const styles = StyleSheet.create({
   },
   locationContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5
   },
 });
