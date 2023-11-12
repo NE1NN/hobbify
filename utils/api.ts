@@ -29,7 +29,5 @@ export const getEvents = async () => {
         ...doc.data(),
       } as Event)
   );
-  console.log(events)
-
   return events
 };
