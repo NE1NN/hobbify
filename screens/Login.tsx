@@ -9,6 +9,14 @@ const Login = () => {
     
   }
 
+  const handleSignUpNavigation = () => {
+    
+  }
+
+  const handleForgetPassword = () => {
+    
+  }
+
   return (
     <View style={styles.header}>
       <View style={styles.image}>
@@ -37,11 +45,22 @@ const Login = () => {
           onChangeText={setPassword}
         />
         <TouchableOpacity
+          onPress={handleForgetPassword}
+        >
+          <Text style={{ color: '#28B67E', fontWeight: 'bold' }}>Forgot Password?</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
           style={styles.button}
           onPress={handleLogin}
         >
           <Text style={styles.buttonText}>Sign In</Text>
         </TouchableOpacity>
+        <View style={{ marginTop: 15, justifyContent: 'center', flexDirection: 'row' }}>
+          <Text style={{ fontWeight: '500' }}>Don't have an account? </Text>
+          <TouchableOpacity onPress={handleSignUpNavigation}>
+            <Text style={{ color: '#28B67E', fontWeight: '500' }}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   )
