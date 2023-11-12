@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, Button, Image, TouchableOpacity } from 'react-native';
 
-const Register = () => {
+const Login = () => {
   const [username, setUsername] = useState<string>('')
-  const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-  const [confirmPassword, setConfirmPassword] = useState<string>('')
 
-  const handleRegister = () => {
-
+  const handleLogin = () => {
+    
   }
 
   return (
@@ -20,7 +18,7 @@ const Register = () => {
         />
       </View>
       <View style={styles.title}>
-        <Text style={styles.titleText}>Create New Account</Text>
+        <Text style={styles.titleText}>Log in to Your Account</Text>
       </View>
       <View style={styles.content}>
         <Text style={styles.inputTitle}>Username</Text>
@@ -30,14 +28,6 @@ const Register = () => {
           value={username}
           onChangeText={setUsername}
         />
-        <Text style={styles.inputTitle}>Email</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Email@email.com"
-          keyboardType="email-address"
-          value={email}
-          onChangeText={setEmail}
-        />
         <Text style={styles.inputTitle}>Password</Text>
         <TextInput
           style={styles.input}
@@ -46,29 +36,20 @@ const Register = () => {
           value={password}
           onChangeText={setPassword}
         />
-        <Text style={styles.inputTitle}>Confirm Password</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="password1234"
-          secureTextEntry={true}
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-        />
         <TouchableOpacity
           style={styles.button}
-          onPress={handleRegister}
+          onPress={handleLogin}
         >
-          <Text style={styles.buttonText}>Create Account</Text>
+          <Text style={styles.buttonText}>Sign In</Text>
         </TouchableOpacity>
       </View>
     </View>
   )
-
 }
 
 const styles = StyleSheet.create({
   header: {
-    marginTop: 40,
+    marginTop: 70,
   },
   title: {
     alignItems: 'center',
@@ -116,4 +97,5 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   }
 })
-export default Register
+
+export default Login
