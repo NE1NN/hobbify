@@ -1,16 +1,22 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import React from 'react';
 import { FontAwesome } from '@expo/vector-icons';
 
-export default function EventCard() {
+type EventCardProps = {
+  name: string,
+  thumbnail: string,
+  location: string
+}
+
+export default function EventCard({name, thumbnail, location}: EventCardProps) {
   return (
     <View style={styles.container}>
-      <View style={styles.image}></View>
+      <Image source={{uri: thumbnail}} style={styles.image}></Image>
       <View style={styles.detailsContainer}>
-        <Text style={styles.eventName}>Soccer</Text>
+        <Text style={styles.eventName}>{name}</Text>
         <View style={styles.locationContainer}>
           <FontAwesome name="map-marker" />
-          <Text>UNSW Village Green</Text>
+          <Text>{location}</Text>
         </View>
         <View>
           <Text>Thursday, 11 November</Text>

@@ -1,13 +1,15 @@
 import * as FileSystem from 'expo-file-system';
 const filePath = FileSystem.documentDirectory + 'data.json';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebaseConfig';
 
 type User = {
   userId: number;
   name: string;
 };
 
-type Event = {
-  eventId: number;
+export type Event = {
+  eventId: string;
   thumbnail: string;
   name: string;
   location: string;
@@ -19,22 +21,18 @@ type Data = {
   events: Event[];
 };
 
-const readJsonFile = async (filePath: string) => {
-  try {
-    const content = await FileSystem.readAsStringAsync(filePath);
-    return JSON.parse(content);
-  } catch (error) {
-    console.error('Error reading JSON file:', error);
-  }
-};
+export const getEvents = async () => {
+  const eventsCol = collection(db, 'events');
+  const eventsDocs = await getDocs(eventsCol);
 
-export const getUsers = async () => {
-  try {
-    const data = await readJsonFile(filePath);
-    console.log(data)
-    return data?.users;
-  } catch (error) {
-    console.error('Error parsing:', error);
-    return null;
-  }
+  const events: Event[] = eventsDocs.docs.map(
+    (doc) =>
+      ({
+        eventId: doc.id,
+        ...doc.data(),
+      } as Event)
+  );
+  console.log(events)
+
+  return events
 };
