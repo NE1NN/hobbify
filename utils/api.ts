@@ -2,6 +2,7 @@ import * as FileSystem from 'expo-file-system';
 const filePath = FileSystem.documentDirectory + 'data.json';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
+import { Timestamp } from 'firebase/firestore';
 
 type User = {
   userId: number;
@@ -14,11 +15,7 @@ export type Event = {
   name: string;
   location: string;
   creatorId: number;
-};
-
-type Data = {
-  users: User[];
-  events: Event[];
+  time: Timestamp;
 };
 
 export const getEvents = async () => {

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import EventCard from '../components/EventCard';
-import { getEvents } from '../utils/helper';
-import { Event } from '../utils/helper';
+import { getEvents } from '../utils/api';
+import { Event } from '../utils/api';
 
 export default function HomeScreen() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -30,6 +30,7 @@ export default function HomeScreen() {
             name={event.name}
             location={event.location}
             thumbnail={event.thumbnail}
+            time={event.time}
           />
         ))}
       </View>

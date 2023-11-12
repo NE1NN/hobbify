@@ -1,17 +1,25 @@
 import { View, Text, StyleSheet, Image } from 'react-native';
 import React from 'react';
 import { FontAwesome } from '@expo/vector-icons';
+import { Timestamp } from 'firebase/firestore';
+import { timestampToString } from '../utils/helpers';
 
 type EventCardProps = {
-  name: string,
-  thumbnail: string,
-  location: string
-}
+  name: string;
+  thumbnail: string;
+  location: string;
+  time: Timestamp;
+};
 
-export default function EventCard({name, thumbnail, location}: EventCardProps) {
+export default function EventCard({
+  name,
+  thumbnail,
+  location,
+  time,
+}: EventCardProps) {
   return (
     <View style={styles.container}>
-      <Image source={{uri: thumbnail}} style={styles.image}></Image>
+      <Image source={{ uri: thumbnail }} style={styles.image}></Image>
       <View style={styles.detailsContainer}>
         <Text style={styles.eventName}>{name}</Text>
         <View style={styles.locationContainer}>
@@ -19,8 +27,8 @@ export default function EventCard({name, thumbnail, location}: EventCardProps) {
           <Text>{location}</Text>
         </View>
         <View>
-          <Text>Thursday, 11 November</Text>
-          <Text>at 4pm</Text>
+          <Text>{timestampToString(time, 'date')}</Text>
+          <Text>at {timestampToString(time, 'time')}</Text>
         </View>
       </View>
     </View>
@@ -34,7 +42,7 @@ const styles = StyleSheet.create({
   detailsContainer: {
     justifyContent: 'center',
     gap: 20,
-    marginLeft: 15
+    marginLeft: 15,
   },
   eventName: {
     fontWeight: 'bold',
@@ -49,6 +57,6 @@ const styles = StyleSheet.create({
   locationContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5
+    gap: 5,
   },
 });
