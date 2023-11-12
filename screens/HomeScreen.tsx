@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import EventCard from '../components/EventCard';
+import { getUsers } from '../utils/helper';
 
 export default function HomeScreen() {
   return (
@@ -12,6 +13,7 @@ export default function HomeScreen() {
       </View>
       <Text style={styles.recommendations}>Recommendations</Text>
       <EventCard />
+      <Button title='test' onPress={getUsers}/>
     </SafeAreaView>
   );
 }
