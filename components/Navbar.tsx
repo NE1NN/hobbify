@@ -8,12 +8,31 @@ const Tab = createBottomTabNavigator();
 
 export default function Navbar() {
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === 'Home') {
+            iconName = focused ? 'ios-home' : 'ios-home-outline';
+          } 
+
+          return (
+            <FontAwesome name={iconName as any} size={size} color={color} />
+          );
+        },
+        tabBarActiveTintColor: 'green',
+        tabBarInactiveTintColor: 'gray',
+      })}
+    >
       <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarIcon: ({ size }) => <FontAwesome name="home" size={size} />,
+          tabBarIcon: ({ size }) => {
+            return <FontAwesome name="home" size={size} />;
+          },
         }}
       />
       <Tab.Screen
