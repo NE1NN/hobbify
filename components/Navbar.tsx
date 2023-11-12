@@ -15,54 +15,32 @@ export default function Navbar() {
           let iconName;
 
           if (route.name === 'Home') {
-            iconName = focused ? 'ios-home' : 'ios-home-outline';
-          } 
+            iconName = 'home';
+          } else if (route.name === 'Search') {
+            iconName = 'search';
+          } else if (route.name === 'Event') {
+            iconName = 'calendar';
+          } else if (route.name === 'Search') {
+            iconName = 'search';
+          } else if (route.name === 'Profile') {
+            iconName = 'user';
+          } else if (route.name === 'Settings') {
+            iconName = 'cog';
+          }
 
           return (
             <FontAwesome name={iconName as any} size={size} color={color} />
           );
         },
         tabBarActiveTintColor: 'green',
-        tabBarInactiveTintColor: 'gray',
+        tabBarInactiveTintColor: 'black',
       })}
     >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          tabBarIcon: ({ size }) => {
-            return <FontAwesome name="home" size={size} />;
-          },
-        }}
-      />
-      <Tab.Screen
-        name="Search"
-        component={SearchScreen}
-        options={{
-          tabBarIcon: ({ size }) => <FontAwesome name="search" size={size} />,
-        }}
-      />
-      <Tab.Screen
-        name="Event"
-        component={SearchScreen}
-        options={{
-          tabBarIcon: ({ size }) => <FontAwesome name="calendar" size={size} />,
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={SearchScreen}
-        options={{
-          tabBarIcon: ({ size }) => <FontAwesome name="user" size={size} />,
-        }}
-      />
-      <Tab.Screen
-        name="Settings"
-        component={SearchScreen}
-        options={{
-          tabBarIcon: ({ size }) => <FontAwesome name="cog" size={size} />,
-        }}
-      />
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Search" component={SearchScreen} />
+      <Tab.Screen name="Event" component={SearchScreen} />
+      <Tab.Screen name="Profile" component={SearchScreen} />
+      <Tab.Screen name="Settings" component={SearchScreen} />
     </Tab.Navigator>
   );
 }
