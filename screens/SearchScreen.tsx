@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FlatList, ListRenderItem, StyleSheet } from 'react-native';
+import { FlatList, ListRenderItem, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SearchBar } from '@rneui/themed';
 import { searchEvent } from '../utils/api';
@@ -38,13 +38,16 @@ export default function SearchScreen() {
         value={searchValue}
         onChangeText={(newText) => handleInputChange(newText)}
       ></SearchBar>
-      <FlatList
-        data={events}
-        renderItem={renderEvents}
-        keyExtractor={(_, index) => index.toString()}
-      />
+      <View style={styles.eventsContainer}>
+        <FlatList
+          data={events}
+          renderItem={renderEvents}
+          keyExtractor={(_, index) => index.toString()}
+          ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+        />
+      </View>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({ eventsContainer: { marginBottom: 10 } });
+const styles = StyleSheet.create({ eventsContainer: { marginLeft: 10 } });
