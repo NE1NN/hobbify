@@ -9,10 +9,11 @@ const Register = ({ navigation }) => {
   const [confirmPassword, setConfirmPassword] = useState<string>('')
   const [isPasswordSame, setIsPasswordSame] = useState<boolean>(true)
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (password === confirmPassword) {
-      const token = registerUser(username, email, password)
-      navigation.navigate("Home", { token })
+      const { token, userId } = await registerUser(username, email, password)
+      
+      navigation.navigate("Home", { userId })
     }
     else setIsPasswordSame(false)
   }

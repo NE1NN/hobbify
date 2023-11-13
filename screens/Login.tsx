@@ -7,17 +7,21 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState<string>('')
 
   const handleLogin = async () => {
-    const token = await loginUser(username, password)
+    const res = await loginUser(username, password)
 
-    if (token !== null) {
-      navigation.navigate('Home')
-    } else {
-      console.log('meki')
+    if (res) {
+      const { token, userId } = res
+      if (token !== null) {
+        navigation.navigate('Home', {userId})
+      } else {
+        console.log('meki')
+      }
     }
   }
 
   const handleForgetPassword = () => {
-    
+    // FUTURE IMPLEMENTATION
+    console.log('yang baca kontol')                              
   }
 
   return (

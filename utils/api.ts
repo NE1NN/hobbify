@@ -54,6 +54,14 @@ export const getEvent = async (eventId: string) => {
 export const registerUser = async (username: string, email: string, password: string) => {
   const userCol = collection(db, 'users')
 
+  const usernameQuery = query(userCol, where("username", "==", username));
+  const querySnapshot = await getDocs(usernameQuery);
+
+  if (!querySnapshot.empty) {
+    // Username already exists
+    throw new Error('Username already taken');
+  }
+
   let user = {
     createdEvents: [],
     email,
@@ -64,7 +72,10 @@ export const registerUser = async (username: string, email: string, password: st
   }
 
   await addDoc(userCol, user)
-  return generateSimpleToken()
+  return {
+    token: generateSimpleToken(),
+    userId: user.userId
+  }
 }
 
 export const loginUser = async (username: string, password: string) => {
@@ -75,9 +86,39 @@ export const loginUser = async (username: string, password: string) => {
     where("password", "==", password )
   );
   const querySnapshot = await getDocs(q);
-  console.log(querySnapshot)
+
   if (!querySnapshot.empty) {
-    return generateSimpleToken(); 
+    const userDoc = querySnapshot.docs[0];
+    const userData = userDoc.data(); // Retrieve the data of the user document
+
+    const userId = userData.userId; // Access the 'userId' field
+
+    return {
+      token: generateSimpleToken(),
+      userId: userId // Use the 'userId' from the document data
+    }; 
+
+  } else {
+    return null;
+  }
+}
+
+export const getUserDetail = async (userId: number) => {
+  const usersCol = collection(db, 'users')
+  const q = query(
+    usersCol, 
+    where("userId", "==", userId),
+  );
+  const querySnapshot = await getDocs(q);
+
+  if (!querySnapshot.empty) {
+    const userDoc = querySnapshot.docs[0];
+    const userData = userDoc.data(); // Retrieve the data of the user document
+
+    const username = userData.username; 
+
+    return username
+
   } else {
     return null;
   }

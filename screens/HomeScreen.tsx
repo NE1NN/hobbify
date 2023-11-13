@@ -2,17 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { Button, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import EventCard from '../components/EventCard';
-import { getEvents } from '../utils/api';
+import { getEvents, getUserDetail } from '../utils/api';
 import { Event } from '../utils/api';
 
-export default function HomeScreen() {
+export default function HomeScreen({ route }) {
   const [events, setEvents] = useState<Event[]>([]);
+  const [username, setUsername] = useState<string>('')
+  const { userId } = route.params
 
   useEffect(() => {
+    const user = async () => {
+      const name = await getUserDetail(userId)
+      setUsername(name)
+    }
     const populateEvents = async () => {
       const events = await getEvents();
       setEvents(events);
     };
+    user()
     populateEvents();
   }, []);
 
@@ -21,7 +28,7 @@ export default function HomeScreen() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.welcomeContainer}>
           <Text style={styles.welcomeText}>Welcome Back,</Text>
-          <Text style={styles.welcomeText}>User</Text>
+          <Text style={styles.welcomeText}>User {username}</Text>
         </View>
         <Text style={styles.recommendations}>Recommendations</Text>
         <View style={styles.eventsContainer}>
