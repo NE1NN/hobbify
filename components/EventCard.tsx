@@ -9,6 +9,7 @@ type EventCardProps = {
   thumbnail: string;
   location: string;
   time: Timestamp;
+  eventId: string
 };
 
 export default function EventCard({

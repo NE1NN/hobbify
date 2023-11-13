@@ -32,6 +32,7 @@ export default function HomeScreen() {
               location={event.location}
               thumbnail={event.thumbnail}
               time={event.time}
+              eventId={event.eventId}
             />
           ))}
         </View>
