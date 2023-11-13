@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
 import { FontAwesome } from '@expo/vector-icons';
 import SearchScreen from '../screens/SearchScreen';
+import EventsScreen from '../screens/EventsScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -38,7 +39,7 @@ export default function Navbar() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
-      <Tab.Screen name="Event" component={SearchScreen} />
+      <Tab.Screen name="Event" component={EventsScreen} />
       <Tab.Screen name="Profile" component={SearchScreen} />
       <Tab.Screen name="Settings" component={SearchScreen} />
     </Tab.Navigator>
