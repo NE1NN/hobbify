@@ -10,7 +10,7 @@ type EventCardProps = {
   thumbnail: string;
   location: string;
   time: Timestamp;
-  eventId: string
+  eventId: string;
 };
 
 export default function EventCard({
@@ -18,12 +18,12 @@ export default function EventCard({
   thumbnail,
   location,
   time,
-  eventId
+  eventId,
 }: EventCardProps) {
-
   const handlePress = async () => {
-    const event = await getEvent(eventId)
-  }
+    const event = await getEvent(eventId);
+    console.log(event);
+  };
 
   return (
     <TouchableOpacity style={styles.container} onPress={handlePress}>
