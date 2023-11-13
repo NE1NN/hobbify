@@ -1,8 +1,9 @@
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { FontAwesome } from '@expo/vector-icons';
 import { Timestamp } from 'firebase/firestore';
 import { timestampToString } from '../utils/helpers';
+import { getEvent } from '../utils/api';
 
 type EventCardProps = {
   name: string;
@@ -17,9 +18,15 @@ export default function EventCard({
   thumbnail,
   location,
   time,
+  eventId
 }: EventCardProps) {
+
+  const handlePress = async () => {
+    const event = await getEvent(eventId)
+  }
+
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={handlePress}>
       <Image source={{ uri: thumbnail }} style={styles.image}></Image>
       <View style={styles.detailsContainer}>
         <Text style={styles.eventName}>{name}</Text>
@@ -32,7 +39,7 @@ export default function EventCard({
           <Text>at {timestampToString(time, 'time')}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 

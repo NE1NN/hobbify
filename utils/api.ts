@@ -1,6 +1,6 @@
 import * as FileSystem from 'expo-file-system';
 const filePath = FileSystem.documentDirectory + 'data.json';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { Timestamp } from 'firebase/firestore';
 
@@ -42,3 +42,10 @@ export const searchEvent = async (searchValue: string) => {
   const eventDocs = await getDocs(eventsQuery);
   return eventDocs;
 };
+
+export const getEvent = async (eventId: string) => {
+  const eventsCol = collection(db, 'events')
+  const eventRef = doc(eventsCol, eventId)
+  const eventDoc = await getDoc(eventRef)
+  return eventDoc
+}
