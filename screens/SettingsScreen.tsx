@@ -14,11 +14,9 @@ import darkEllipse from "../assets/Settings/dark_ellipse.png";
 import { Feather } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
 
-export default function Settings() {
+export default function SettingsScreen() {
   const [mode, setMode] = useState("light");
   const textColor = mode === "dark" ? "#fff" : "#000";
-
-  console.log(mode);
 
   const dynamicStyles = StyleSheet.create({
     container: {
@@ -69,8 +67,9 @@ export default function Settings() {
       source={mode === "dark" ? darkEllipse : ellipse}
       style={dynamicStyles.container}
     >
-      {/* Spacer */}
+      {/* Heading Spacer */}
       <View style={styles.headerContainer} />
+
       {/* Accessibility Options Title */}
       <View style={styles.title}>
         <Text style={dynamicStyles.header}>Accessibilty Options</Text>
@@ -80,6 +79,8 @@ export default function Settings() {
       <View style={dynamicStyles.linebreak} />
       {/* Space */}
       <View style={{ height: 20 }}></View>
+
+      {/* Light Mode / Dark Mode  */}
       <View style={styles.darkLightContainer}>
         <View style={styles.modeContainer}>
           <TouchableOpacity
@@ -95,7 +96,6 @@ export default function Settings() {
           </TouchableOpacity>
           <Text style={dynamicStyles.boldFont}>Light Mode</Text>
         </View>
-
         <View
           style={{
             borderLeftWidth: 1.5,
@@ -237,13 +237,14 @@ export default function Settings() {
           </View>
         </View>
       </View>
-
       {/* Linebreak */}
       <View style={{ height: 20 }}></View>
       <View style={dynamicStyles.linebreak} />
       {/* Space */}
       <View style={{ height: 20 }}></View>
-      <Button title="LOG OUT"></Button>
+
+      {/* Log Out */}
+      <Button title="LOG OUT" onPress={() => console.log("Log out")}></Button>
     </ImageBackground>
   );
 }
@@ -286,7 +287,7 @@ const styles = StyleSheet.create({
   colorBlindContainer: {
     width: "90%",
     alignContent: "flex-start",
-    flexDirection: "col",
+    flexDirection: "column",
     justifyContent: "space-between",
   },
   colorBlindColorsContainer: {
