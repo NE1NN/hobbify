@@ -1,14 +1,20 @@
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, Button, Image, TouchableOpacity } from 'react-native';
+import { registerUser } from '../utils/api';
 
-const Register = () => {
+const Register = ({ navigation }) => {
   const [username, setUsername] = useState<string>('')
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [confirmPassword, setConfirmPassword] = useState<string>('')
+  const [isPasswordSame, setIsPasswordSame] = useState<boolean>(true)
 
   const handleRegister = () => {
-
+    if (password === confirmPassword) {
+      const token = registerUser(username, email, password)
+      navigation.navigate("Home", { token })
+    }
+    else setIsPasswordSame(false)
   }
 
   return (
@@ -54,12 +60,22 @@ const Register = () => {
           value={confirmPassword}
           onChangeText={setConfirmPassword}
         />
+        {!isPasswordSame ? <Text style={{ color: 'red' }}>
+          Password does not match!
+        </Text>
+        : null}
         <TouchableOpacity
           style={styles.button}
           onPress={handleRegister}
         >
           <Text style={styles.buttonText}>Create Account</Text>
         </TouchableOpacity>
+        <View style={{ marginTop: 15, justifyContent: 'center', flexDirection: 'row' }}>
+          <Text style={{ fontWeight: '500' }}>Already have an account? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <Text style={{ color: '#28B67E', fontWeight: '500' }}>Sign In</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   )

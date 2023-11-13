@@ -1,8 +1,9 @@
 import * as FileSystem from 'expo-file-system';
 const filePath = FileSystem.documentDirectory + 'data.json';
-import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where, doc, getDoc, setDoc, addDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { Timestamp } from 'firebase/firestore';
+import { generateSimpleToken, generateUserId } from './helpers';
 
 type User = {
   userId: number;
@@ -48,4 +49,36 @@ export const getEvent = async (eventId: string) => {
   const eventRef = doc(eventsCol, eventId)
   const eventDoc = await getDoc(eventRef)
   return eventDoc
+}
+
+export const registerUser = async (username: string, email: string, password: string) => {
+  const userCol = collection(db, 'users')
+
+  let user = {
+    createdEvents: [],
+    email,
+    joinedEvents: [],
+    username,
+    password,
+    userId: generateUserId()
+  }
+
+  await addDoc(userCol, user)
+  return generateSimpleToken()
+}
+
+export const loginUser = async (username: string, password: string) => {
+  const usersCol = collection(db, 'users')
+  const q = query(
+    usersCol, 
+    where("username", "==", username),
+    where("password", "==", password )
+  );
+  const querySnapshot = await getDocs(q);
+  console.log(querySnapshot)
+  if (!querySnapshot.empty) {
+    return generateSimpleToken(); 
+  } else {
+    return null;
+  }
 }

@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, Button, Image, TouchableOpacity } from 'react-native';
+import { loginUser } from '../utils/api';
 
-const Login = () => {
+const Login = ({ navigation }) => {
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
 
-  const handleLogin = () => {
-    
-  }
+  const handleLogin = async () => {
+    const token = await loginUser(username, password)
 
-  const handleSignUpNavigation = () => {
-    
+    if (token !== null) {
+      navigation.navigate('Home')
+    } else {
+      console.log('meki')
+    }
   }
 
   const handleForgetPassword = () => {
@@ -40,7 +43,7 @@ const Login = () => {
         <TextInput
           style={styles.input}
           placeholder="password1234"
-          secureTextEntry={true}
+          // secureTextEntry={true}
           value={password}
           onChangeText={setPassword}
         />
@@ -57,7 +60,7 @@ const Login = () => {
         </TouchableOpacity>
         <View style={{ marginTop: 15, justifyContent: 'center', flexDirection: 'row' }}>
           <Text style={{ fontWeight: '500' }}>Don't have an account? </Text>
-          <TouchableOpacity onPress={handleSignUpNavigation}>
+          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
             <Text style={{ color: '#28B67E', fontWeight: '500' }}>Sign Up</Text>
           </TouchableOpacity>
         </View>
