@@ -24,7 +24,6 @@ export default function SettingsScreen() {
       width: "100%",
       backgroundColor: mode === "dark" ? "#1c1c1c" : "#fff",
       alignItems: "center",
-      borderWidth: 3,
     },
     header: {
       fontSize: 30,
