@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { FlatList, ListRenderItem, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  ListRenderItem,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SearchBar } from '@rneui/themed';
 import { searchEvent } from '../utils/api';
@@ -9,15 +15,18 @@ import { Event } from '../utils/api';
 export default function SearchScreen() {
   const [searchValue, setSearchValue] = useState('');
   const [events, setEvents] = useState<Event[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = async (newText: string) => {
     setSearchValue(newText);
+    setIsLoading(true);
     const searchedEvents = await searchEvent(newText);
     setEvents(
       searchedEvents.docs.map(
         (doc) => ({ eventId: doc.id, ...doc.data() } as Event)
       )
     );
+    setIsLoading(false);
   };
 
   const renderEvents: ListRenderItem<Event> = ({ item }) => (
@@ -31,7 +40,7 @@ export default function SearchScreen() {
   );
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{flex: 1}}>
       <SearchBar
         placeholder="Search for an event"
         platform="ios"
@@ -39,15 +48,24 @@ export default function SearchScreen() {
         onChangeText={(newText) => handleInputChange(newText)}
       ></SearchBar>
       <View style={styles.eventsContainer}>
-        <FlatList
-          data={events}
-          renderItem={renderEvents}
-          keyExtractor={(_, index) => index.toString()}
-          ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-        />
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" />
+          </View>
+        ) : (
+          <FlatList
+            data={events}
+            renderItem={renderEvents}
+            keyExtractor={(_, index) => index.toString()}
+            ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({ eventsContainer: { marginLeft: 10 } });
+const styles = StyleSheet.create({
+  eventsContainer: { marginLeft: 10, flex: 1 },
+  loadingContainer: {justifyContent: 'center', alignItems: 'center', flex: 1}
+});
