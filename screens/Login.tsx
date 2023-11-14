@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { StyleSheet, Text, TextInput, View, Button, Image, TouchableOpacity } from 'react-native';
 import { loginUser } from '../utils/api';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
+import AuthContext from '../authContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -14,14 +15,20 @@ const Login = ({ navigation, route }: Props) => {
     throw new Error ('Error params not passed')
   }
 
-  const {setLoggedIn} = route.params
-  console.log(route)
+  const contextValue = useContext(AuthContext)
+
+  if (!contextValue) {
+    throw new Error('No context provided')
+  }
+
+  const {setLoggedIn} = contextValue
 
   const handleLogin = async () => {
     const res = await loginUser(username, password)
 
     if (res) {
       const { token, userId } = res
+      console.log(res)
       if (userId !== undefined) {
         // navigation.navigate('Home', {userId})
         setLoggedIn(userId)

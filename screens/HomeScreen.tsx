@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import EventCard from '../components/EventCard';
@@ -6,16 +6,21 @@ import { getEvents, getUserDetail } from '../utils/api';
 import { Event } from '../utils/api';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
+import AuthContext from '../authContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
-export default function HomeScreen({ route }: Props) {
+export default function HomeScreen() {
   const [events, setEvents] = useState<Event[]>([]);
   const [username, setUsername] = useState<string>('')
 
-  console.log(route)
+  const contextValue = useContext(AuthContext)
+
+  if (!contextValue) {
+    throw new Error('No context value')
+  }
   
-  const { userId } = route.params
+  const { userId } = contextValue
 
   useEffect(() => {
     const user = async () => {

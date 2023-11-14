@@ -1,18 +1,19 @@
-import { Settings, StyleSheet } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomeScreen from './screens/HomeScreen';
-import Navbar from './components/Navbar';
-import SettingsScreen from './screens/SettingsScreen';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Register from './screens/Register';
-import Login from './screens/Login';
-import { useState } from 'react';
+import { Settings, StyleSheet } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import HomeScreen from "./screens/HomeScreen";
+import Navbar from "./components/Navbar";
+import SettingsScreen from "./screens/SettingsScreen";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Register from "./screens/Register";
+import Login from "./screens/Login";
+import { useState } from "react";
+import AuthContext from "./authContext";
 
 export type RootStackParamList = {
-  Register: { setLoggedIn: (userId: number) => void }
-  Home: { userId: number };
-  Login: { setLoggedIn: (userId: number) => void }
+  Register: { setLoggedIn: (userId: number) => void };
+  Home: undefined;
+  Login: { setLoggedIn: (userId: number) => void };
   Navbar: undefined;
   Settings: undefined;
 };
@@ -27,52 +28,51 @@ export default function App() {
   const setLoggedin = (id: number) => {
     setUserId(id);
     setIsSignedIn(true);
-    console.log(userId)
+    console.log("hm", userId);
   };
 
-  console.log(userId)
+  console.log("asu", userId);
 
   return (
     // <View>
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Register">
-        {userId !== 0 ? (
-          <>
-            <Stack.Screen
-              name="Navbar"
-              component={Navbar}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen name="Home" component={HomeScreen} initialParams={{userId: 1}} />
-            <Stack.Screen name="Settings" component={SettingsScreen} />
-          </>
-        ) : (
-          <>
-            <Stack.Screen
-              name="Register"
-              component={Register}
-              options={{ headerShown: false }}
-              initialParams={{ setLoggedIn: setLoggedin }}
-            />
-            <Stack.Screen
-              name="Login"
-              component={Login}
-              options={{ headerShown: false }}
-              initialParams={{ setLoggedIn: setLoggedin }}
-            />
-          </>
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AuthContext.Provider value={{ userId: userId, setLoggedIn: setLoggedin }}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Register">
+          {userId !== 0 ? (
+            <>
+              <Stack.Screen
+                name="Navbar"
+                component={Navbar}
+                options={{ headerShown: false }}
+              />
+              {/* <Stack.Screen name="Settings" component={SettingsScreen} /> */}
+            </>
+          ) : (
+            <>
+              <Stack.Screen
+                name="Register"
+                component={Register}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Login"
+                component={Login}
+                options={{ headerShown: false }}
+              />
+            </>
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AuthContext.Provider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 
