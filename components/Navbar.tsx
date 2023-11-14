@@ -1,8 +1,10 @@
-import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from '../screens/HomeScreen';
-import { FontAwesome } from '@expo/vector-icons';
-import SearchScreen from '../screens/SearchScreen';
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import HomeScreen from "../screens/HomeScreen";
+import { FontAwesome } from "@expo/vector-icons";
+import SearchScreen from "../screens/SearchScreen";
+import SettingsScreen from "../screens/SettingsScreen";
+import { Settings } from "react-native";
 import EventsScreen from '../screens/EventsScreen';
 
 const Tab = createBottomTabNavigator();
@@ -15,33 +17,33 @@ export default function Navbar() {
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
-          if (route.name === 'Home') {
-            iconName = 'home';
-          } else if (route.name === 'Search') {
-            iconName = 'search';
-          } else if (route.name === 'Event') {
-            iconName = 'calendar';
-          } else if (route.name === 'Search') {
-            iconName = 'search';
-          } else if (route.name === 'Profile') {
-            iconName = 'user';
-          } else if (route.name === 'Settings') {
-            iconName = 'cog';
+          if (route.name === "Home") {
+            iconName = "home";
+          } else if (route.name === "Search") {
+            iconName = "search";
+          } else if (route.name === "Event") {
+            iconName = "calendar";
+          } else if (route.name === "Search") {
+            iconName = "search";
+          } else if (route.name === "Profile") {
+            iconName = "user";
+          } else if (route.name === "Settings") {
+            iconName = "cog";
           }
 
           return (
             <FontAwesome name={iconName as any} size={size} color={color} />
           );
         },
-        tabBarActiveTintColor: 'green',
-        tabBarInactiveTintColor: 'black',
+        tabBarActiveTintColor: "green",
+        tabBarInactiveTintColor: "black",
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Event" component={EventsScreen} />
       <Tab.Screen name="Profile" component={SearchScreen} />
-      <Tab.Screen name="Settings" component={SearchScreen} />
+      <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
 }
