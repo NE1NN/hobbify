@@ -1,8 +1,9 @@
 import * as FileSystem from 'expo-file-system';
 const filePath = FileSystem.documentDirectory + 'data.json';
-import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where, doc, getDoc, setDoc, addDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { Timestamp } from 'firebase/firestore';
+import { generateSimpleToken, generateUserId } from './helpers';
 
 type User = {
   userId: number;
@@ -48,4 +49,77 @@ export const getEvent = async (eventId: string) => {
   const eventRef = doc(eventsCol, eventId)
   const eventDoc = await getDoc(eventRef)
   return eventDoc
+}
+
+export const registerUser = async (username: string, email: string, password: string) => {
+  const userCol = collection(db, 'users')
+
+  const usernameQuery = query(userCol, where("username", "==", username));
+  const querySnapshot = await getDocs(usernameQuery);
+
+  if (!querySnapshot.empty) {
+    // Username already exists
+    throw new Error('Username already taken');
+  }
+
+  let user = {
+    createdEvents: [],
+    email,
+    joinedEvents: [],
+    username,
+    password,
+    userId: generateUserId()
+  }
+
+  await addDoc(userCol, user)
+  return {
+    token: generateSimpleToken(),
+    userId: user.userId
+  }
+}
+
+export const loginUser = async (username: string, password: string) => {
+  const usersCol = collection(db, 'users')
+  const q = query(
+    usersCol, 
+    where("username", "==", username),
+    where("password", "==", password )
+  );
+  const querySnapshot = await getDocs(q);
+
+  if (!querySnapshot.empty) {
+    const userDoc = querySnapshot.docs[0];
+    const userData = userDoc.data(); // Retrieve the data of the user document
+
+    const userId = userData.userId; // Access the 'userId' field
+
+    return {
+      token: generateSimpleToken(),
+      userId: userId // Use the 'userId' from the document data
+    }; 
+
+  } else {
+    return null;
+  }
+}
+
+export const getUserDetail = async (userId: number) => {
+  const usersCol = collection(db, 'users')
+  const q = query(
+    usersCol, 
+    where("userId", "==", userId),
+  );
+  const querySnapshot = await getDocs(q);
+
+  if (!querySnapshot.empty) {
+    const userDoc = querySnapshot.docs[0];
+    const userData = userDoc.data(); // Retrieve the data of the user document
+
+    const username = userData.username; 
+
+    return username
+
+  } else {
+    return null;
+  }
 }
