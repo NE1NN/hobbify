@@ -6,9 +6,15 @@ import { RootStackParamList } from '../App';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
-const Login = ({ navigation }: Props) => {
+const Login = ({ navigation, route }: Props) => {
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
+
+  if (!route.params) {
+    throw new Error ('Error params not passed')
+  }
+
+  const {setLoggedIn} = route.params
 
   const handleLogin = async () => {
     const res = await loginUser(username, password)
@@ -21,6 +27,7 @@ const Login = ({ navigation }: Props) => {
         console.log('meki')
       }
     }
+    setLoggedIn()
   }
 
   const handleForgetPassword = () => {

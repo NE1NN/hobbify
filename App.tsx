@@ -1,47 +1,61 @@
-import { Settings, StyleSheet } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "./screens/HomeScreen";
-import Navbar from "./components/Navbar";
-import SettingsScreen from "./screens/SettingsScreen";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Settings, StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeScreen from './screens/HomeScreen';
+import Navbar from './components/Navbar';
+import SettingsScreen from './screens/SettingsScreen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Register from './screens/Register';
 import Login from './screens/Login';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useState } from 'react';
 
 export type RootStackParamList = {
-  Register: undefined
+  Register: { setLoggedIn: () => void } | undefined;
   Home: { userId: number };
-  Login: undefined
-  Navbar: undefined
-  Settings: undefined
+  Login: { setLoggedIn: () => void } | undefined;
+  Navbar: undefined;
+  Settings: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tabs = createBottomTabNavigator();
 
 export default function App() {
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  const setLoggedin = () => {
+    setIsSignedIn(true);
+  };
+
   return (
     // <View>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Register">
-        <Stack.Screen
-          name="Register"
-          component={Register}
-          options={{ headerShown: false }}
-          />
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Navbar"
-          component={Navbar}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Settings" component={SettingsScreen} />
+        {isSignedIn ? (
+          <>
+            <Stack.Screen
+              name="Register"
+              component={Register}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{ headerShown: false }}
+            />
+          </>
+        ) : (
+          <>
+            <Stack.Screen
+              name="Navbar"
+              component={Navbar}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Settings" component={SettingsScreen} />
+          </>
+        )}
+        :
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -50,9 +64,9 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
