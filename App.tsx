@@ -11,15 +11,15 @@ import { useState } from "react";
 import AuthContext from "./authContext";
 
 export type RootStackParamList = {
-  Register: { setLoggedIn: (userId: number) => void };
+  Register: undefined;
   Home: undefined;
-  Login: { setLoggedIn: (userId: number) => void };
+  Login: undefined;
   Navbar: undefined;
   Settings: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-const Tabs = createBottomTabNavigator();
+// const Tabs = createBottomTabNavigator();
 
 export default function App() {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -35,14 +35,13 @@ export default function App() {
     <AuthContext.Provider value={{ userId: userId, setLoggedIn: setLoggedin }}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Register">
-          {userId !== 0 ? (
+          {isSignedIn ? (
             <>
               <Stack.Screen
                 name="Navbar"
                 component={Navbar}
                 options={{ headerShown: false }}
               />
-              {/* <Stack.Screen name="Settings" component={SettingsScreen} /> */}
             </>
           ) : (
             <>

@@ -7,7 +7,7 @@ import AuthContext from '../authContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
 
-const Register = ({ navigation, route }: Props) => {
+const Register = ({ navigation }: Props) => {
   const [username, setUsername] = useState<string>('')
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -85,7 +85,7 @@ const Register = ({ navigation, route }: Props) => {
         </TouchableOpacity>
         <View style={{ marginTop: 15, justifyContent: 'center', flexDirection: 'row' }}>
           <Text style={{ fontWeight: '500' }}>Already have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Login', {setLoggedIn})}>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
             <Text style={{ color: '#28B67E', fontWeight: '500' }}>Sign In</Text>
           </TouchableOpacity>
         </View>
@@ -97,7 +97,7 @@ const Register = ({ navigation, route }: Props) => {
 
 const styles = StyleSheet.create({
   header: {
-    marginTop: 40,
+    marginTop: 100,
   },
   title: {
     alignItems: 'center',

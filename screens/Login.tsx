@@ -7,13 +7,9 @@ import AuthContext from '../authContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
-const Login = ({ navigation, route }: Props) => {
+const Login = ({ navigation }: Props) => {
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-
-  if (!route.params) {
-    throw new Error ('Error params not passed')
-  }
 
   const contextValue = useContext(AuthContext)
 
@@ -28,7 +24,6 @@ const Login = ({ navigation, route }: Props) => {
 
     if (res) {
       const { token, userId } = res
-      console.log(res)
       if (userId !== undefined) {
         setLoggedIn(userId)
       } else {
@@ -82,7 +77,7 @@ const Login = ({ navigation, route }: Props) => {
         </TouchableOpacity>
         <View style={{ marginTop: 15, justifyContent: 'center', flexDirection: 'row' }}>
           <Text style={{ fontWeight: '500' }}>Don't have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Register', {setLoggedIn})}>
+          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
             <Text style={{ color: '#28B67E', fontWeight: '500' }}>Sign Up</Text>
           </TouchableOpacity>
         </View>
@@ -93,7 +88,7 @@ const Login = ({ navigation, route }: Props) => {
 
 const styles = StyleSheet.create({
   header: {
-    marginTop: 70,
+    marginTop: 100,
   },
   title: {
     alignItems: 'center',
