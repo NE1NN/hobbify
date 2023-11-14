@@ -75,7 +75,7 @@ const Login = ({ navigation, route }: Props) => {
         </TouchableOpacity>
         <View style={{ marginTop: 15, justifyContent: 'center', flexDirection: 'row' }}>
           <Text style={{ fontWeight: '500' }}>Don't have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Register', {setLoggedIn})}>
             <Text style={{ color: '#28B67E', fontWeight: '500' }}>Sign Up</Text>
           </TouchableOpacity>
         </View>

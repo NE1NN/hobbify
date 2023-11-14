@@ -47,11 +47,13 @@ export default function App() {
               name="Register"
               component={Register}
               options={{ headerShown: false }}
+              initialParams={{setLoggedIn: setLoggedin}}
             />
             <Stack.Screen
               name="Login"
               component={Login}
               options={{ headerShown: false }}
+              initialParams={{setLoggedIn: setLoggedin}}
             />
           </>
         )}

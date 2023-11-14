@@ -6,7 +6,7 @@ import { RootStackParamList } from '../App';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
 
-const Register = ({ navigation }: Props) => {
+const Register = ({ navigation, route }: Props) => {
   const [username, setUsername] = useState<string>('')
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -21,6 +21,12 @@ const Register = ({ navigation }: Props) => {
     }
     else setIsPasswordSame(false)
   }
+
+  if (!route.params) {
+    throw new Error ('Error params not passed')
+  }
+
+  const {setLoggedIn} = route.params
 
   return (
     <View style={styles.header}>
@@ -77,7 +83,7 @@ const Register = ({ navigation }: Props) => {
         </TouchableOpacity>
         <View style={{ marginTop: 15, justifyContent: 'center', flexDirection: 'row' }}>
           <Text style={{ fontWeight: '500' }}>Already have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Login', {setLoggedIn})}>
             <Text style={{ color: '#28B67E', fontWeight: '500' }}>Sign In</Text>
           </TouchableOpacity>
         </View>
