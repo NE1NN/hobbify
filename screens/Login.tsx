@@ -15,19 +15,20 @@ const Login = ({ navigation, route }: Props) => {
   }
 
   const {setLoggedIn} = route.params
+  console.log(route)
 
   const handleLogin = async () => {
     const res = await loginUser(username, password)
 
     if (res) {
       const { token, userId } = res
-      if (token !== null) {
-        navigation.navigate('Home', {userId})
+      if (userId !== undefined) {
+        // navigation.navigate('Home', {userId})
+        setLoggedIn(userId)
       } else {
         console.log('meki')
       }
     }
-    setLoggedIn()
   }
 
   const handleForgetPassword = () => {

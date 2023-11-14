@@ -12,6 +12,9 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 export default function HomeScreen({ route }: Props) {
   const [events, setEvents] = useState<Event[]>([]);
   const [username, setUsername] = useState<string>('')
+
+  console.log(route)
+  
   const { userId } = route.params
 
   useEffect(() => {

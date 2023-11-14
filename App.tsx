@@ -10,9 +10,9 @@ import Login from './screens/Login';
 import { useState } from 'react';
 
 export type RootStackParamList = {
-  Register: { setLoggedIn: () => void } | undefined;
+  Register: { setLoggedIn: (userId: number) => void }
   Home: { userId: number };
-  Login: { setLoggedIn: () => void } | undefined;
+  Login: { setLoggedIn: (userId: number) => void }
   Navbar: undefined;
   Settings: undefined;
 };
@@ -22,23 +22,28 @@ const Tabs = createBottomTabNavigator();
 
 export default function App() {
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [userId, setUserId] = useState(0);
 
-  const setLoggedin = () => {
+  const setLoggedin = (id: number) => {
+    setUserId(id);
     setIsSignedIn(true);
+    console.log(userId)
   };
+
+  console.log(userId)
 
   return (
     // <View>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Register">
-        {isSignedIn ? (
+        {userId !== 0 ? (
           <>
             <Stack.Screen
               name="Navbar"
               component={Navbar}
               options={{ headerShown: false }}
             />
-            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Home" component={HomeScreen} initialParams={{userId: 1}} />
             <Stack.Screen name="Settings" component={SettingsScreen} />
           </>
         ) : (
@@ -47,13 +52,13 @@ export default function App() {
               name="Register"
               component={Register}
               options={{ headerShown: false }}
-              initialParams={{setLoggedIn: setLoggedin}}
+              initialParams={{ setLoggedIn: setLoggedin }}
             />
             <Stack.Screen
               name="Login"
               component={Login}
               options={{ headerShown: false }}
-              initialParams={{setLoggedIn: setLoggedin}}
+              initialParams={{ setLoggedIn: setLoggedin }}
             />
           </>
         )}
