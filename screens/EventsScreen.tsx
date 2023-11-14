@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import EventCard from '../components/EventCard';
 import { getEvents } from '../utils/api';
 import { Event } from '../utils/api';
+import UserEventCard from '../components/UserEventCard';
 
 export default function EventsScreen() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -22,7 +23,7 @@ export default function EventsScreen() {
 
         <Text style={styles.recommendations}>Review Users</Text>
         <View>
-          
+          <UserEventCard/>
         </View>
 
 
