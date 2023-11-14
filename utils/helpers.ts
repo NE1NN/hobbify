@@ -24,3 +24,15 @@ export const timestampToString = (timestamp: Timestamp, req: 'time' | 'date') =>
     return formattedTime;
   }
 };
+
+export const generateSimpleToken = () => {
+  const now = new Date().getTime(); // Current time
+  const random = Math.random() * 1000000; // Random number
+  return `${now}-${Math.floor(random)}`;
+}
+
+export const generateUserId = () => {
+  const timestamp = Date.now();
+  const randomNum = Math.floor(Math.random() * 10000);
+  return timestamp + randomNum;
+}

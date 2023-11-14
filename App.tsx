@@ -4,6 +4,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
 import Navbar from './components/Navbar';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Register from './screens/Register';
+import Login from './screens/Login';
 
 const Stack = createNativeStackNavigator();
 const Tabs = createBottomTabNavigator();
@@ -12,7 +14,17 @@ export default function App() {
   return (
     // <View>
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="Register">
+        <Stack.Screen
+          name="Register"
+          component={Register}
+          options={{ headerShown: false }}
+          />
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="Navbar"
           component={Navbar}
