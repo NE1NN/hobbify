@@ -6,8 +6,16 @@ import Navbar from './components/Navbar';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Register from './screens/Register';
 import Login from './screens/Login';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-const Stack = createNativeStackNavigator();
+export type RootStackParamList = {
+  Register: undefined
+  Home: { userId: number };
+  Login: undefined
+  Navbar: undefined
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tabs = createBottomTabNavigator();
 
 export default function App() {

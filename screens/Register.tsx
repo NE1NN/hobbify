@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, Button, Image, TouchableOpacity } from 'react-native';
 import { registerUser } from '../utils/api';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../App';
 
-const Register = ({ navigation }) => {
+type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
+
+const Register = ({ navigation }: Props) => {
   const [username, setUsername] = useState<string>('')
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')

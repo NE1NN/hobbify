@@ -4,8 +4,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import EventCard from '../components/EventCard';
 import { getEvents, getUserDetail } from '../utils/api';
 import { Event } from '../utils/api';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../App';
 
-export default function HomeScreen({ route }) {
+type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+
+export default function HomeScreen({ route }: Props) {
   const [events, setEvents] = useState<Event[]>([]);
   const [username, setUsername] = useState<string>('')
   const { userId } = route.params

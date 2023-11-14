@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, Button, Image, TouchableOpacity } from 'react-native';
 import { loginUser } from '../utils/api';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../App';
 
-const Login = ({ navigation }) => {
+type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
+
+const Login = ({ navigation }: Props) => {
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
 
@@ -47,7 +51,7 @@ const Login = ({ navigation }) => {
         <TextInput
           style={styles.input}
           placeholder="password1234"
-          // secureTextEntry={true}
+          secureTextEntry={true}
           value={password}
           onChangeText={setPassword}
         />
