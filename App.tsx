@@ -1,9 +1,10 @@
-import { StyleSheet } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomeScreen from './screens/HomeScreen';
-import Navbar from './components/Navbar';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Settings, StyleSheet } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import HomeScreen from "./screens/HomeScreen";
+import Navbar from "./components/Navbar";
+import SettingsScreen from "./screens/SettingsScreen";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Register from './screens/Register';
 import Login from './screens/Login';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -39,6 +40,7 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -47,9 +49,9 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 
