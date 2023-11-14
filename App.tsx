@@ -34,6 +34,16 @@ export default function App() {
         {isSignedIn ? (
           <>
             <Stack.Screen
+              name="Navbar"
+              component={Navbar}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Settings" component={SettingsScreen} />
+          </>
+        ) : (
+          <>
+            <Stack.Screen
               name="Register"
               component={Register}
               options={{ headerShown: false }}
@@ -44,18 +54,7 @@ export default function App() {
               options={{ headerShown: false }}
             />
           </>
-        ) : (
-          <>
-            <Stack.Screen
-              name="Navbar"
-              component={Navbar}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name="Settings" component={SettingsScreen} />
-          </>
         )}
-        :
       </Stack.Navigator>
     </NavigationContainer>
   );
