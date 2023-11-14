@@ -40,7 +40,7 @@ export default function HomeScreen() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.welcomeContainer}>
           <Text style={styles.welcomeText}>Welcome Back,</Text>
-          <Text style={styles.welcomeText}>User {username}</Text>
+          <Text style={styles.welcomeText}>{username}</Text>
         </View>
         <Text style={styles.recommendations}>Recommendations</Text>
         <View style={styles.eventsContainer}>

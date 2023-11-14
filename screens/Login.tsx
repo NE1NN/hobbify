@@ -30,7 +30,6 @@ const Login = ({ navigation, route }: Props) => {
       const { token, userId } = res
       console.log(res)
       if (userId !== undefined) {
-        // navigation.navigate('Home', {userId})
         setLoggedIn(userId)
       } else {
         console.log('meki')

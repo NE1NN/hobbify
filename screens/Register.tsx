@@ -14,23 +14,22 @@ const Register = ({ navigation, route }: Props) => {
   const [confirmPassword, setConfirmPassword] = useState<string>('')
   const [isPasswordSame, setIsPasswordSame] = useState<boolean>(true)
 
-  const handleRegister = async () => {
-    if (password === confirmPassword) {
-      const { token, userId } = await registerUser(username, email, password)
-      
-      navigation.navigate("Home", { userId })
-    }
-    else setIsPasswordSame(false)
-  }
-
+  
   const contextValue = useContext(AuthContext)
 
   if (!contextValue) {
     throw new Error ('Error params not passed')
   }
-
+  
   const {setLoggedIn} = contextValue
-
+  
+  const handleRegister = async () => {
+    if (password === confirmPassword) {
+      const { token, userId } = await registerUser(username, email, password)
+      setLoggedIn(userId)
+    }
+    else setIsPasswordSame(false)
+  }
   return (
     <View style={styles.header}>
       <View style={styles.image}>

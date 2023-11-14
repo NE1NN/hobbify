@@ -28,10 +28,7 @@ export default function App() {
   const setLoggedin = (id: number) => {
     setUserId(id);
     setIsSignedIn(true);
-    console.log("hm", userId);
   };
-
-  console.log("asu", userId);
 
   return (
     // <View>
