@@ -6,46 +6,61 @@ import Navbar from "./components/Navbar";
 import SettingsScreen from "./screens/SettingsScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Register from './screens/Register';
-import Login from './screens/Login';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import Register from "./screens/Register";
+import Login from "./screens/Login";
+import { useState } from "react";
+import AuthContext from "./AuthContext";
 
 export type RootStackParamList = {
-  Register: undefined
-  Home: { userId: number };
-  Login: undefined
-  Navbar: undefined
-  Settings: undefined
+  Register: undefined;
+  Home: undefined;
+  Login: undefined;
+  Navbar: undefined;
+  Settings: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-const Tabs = createBottomTabNavigator();
+// const Tabs = createBottomTabNavigator();
 
 export default function App() {
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [userId, setUserId] = useState(0);
+
+  const setLoggedin = (id: number) => {
+    setUserId(id);
+    setIsSignedIn(true);
+  };
+
   return (
     // <View>
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Register">
-        <Stack.Screen
-          name="Register"
-          component={Register}
-          options={{ headerShown: false }}
-          />
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Navbar"
-          component={Navbar}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Settings" component={SettingsScreen} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AuthContext.Provider value={{ userId: userId, setLoggedIn: setLoggedin }}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Register">
+          {isSignedIn ? (
+            <>
+              <Stack.Screen
+                name="Navbar"
+                component={Navbar}
+                options={{ headerShown: false }}
+              />
+            </>
+          ) : (
+            <>
+              <Stack.Screen
+                name="Register"
+                component={Register}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Login"
+                component={Login}
+                options={{ headerShown: false }}
+              />
+            </>
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AuthContext.Provider>
   );
 }
 

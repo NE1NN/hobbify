@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import EventCard from '../components/EventCard';
@@ -6,13 +6,21 @@ import { getEvents, getUserDetail } from '../utils/api';
 import { Event } from '../utils/api';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
+import AuthContext from '../AuthContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
-export default function HomeScreen({ route }: Props) {
+export default function HomeScreen() {
   const [events, setEvents] = useState<Event[]>([]);
   const [username, setUsername] = useState<string>('')
-  const { userId } = route.params
+
+  const contextValue = useContext(AuthContext)
+
+  if (!contextValue) {
+    throw new Error('No context value')
+  }
+  
+  const { userId } = contextValue
 
   useEffect(() => {
     const user = async () => {
@@ -32,7 +40,7 @@ export default function HomeScreen({ route }: Props) {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.welcomeContainer}>
           <Text style={styles.welcomeText}>Welcome Back,</Text>
-          <Text style={styles.welcomeText}>User {username}</Text>
+          <Text style={styles.welcomeText}>{username}</Text>
         </View>
         <Text style={styles.recommendations}>Recommendations</Text>
         <View style={styles.eventsContainer}>

@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { StyleSheet, Text, TextInput, View, Button, Image, TouchableOpacity } from 'react-native';
 import { loginUser } from '../utils/api';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
+import AuthContext from '../AuthContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -10,13 +11,21 @@ const Login = ({ navigation }: Props) => {
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
 
+  const contextValue = useContext(AuthContext)
+
+  if (!contextValue) {
+    throw new Error('No context provided')
+  }
+
+  const {setLoggedIn} = contextValue
+
   const handleLogin = async () => {
     const res = await loginUser(username, password)
 
     if (res) {
       const { token, userId } = res
-      if (token !== null) {
-        navigation.navigate('Home', {userId})
+      if (userId !== undefined) {
+        setLoggedIn(userId)
       } else {
         console.log('meki')
       }
@@ -79,7 +88,7 @@ const Login = ({ navigation }: Props) => {
 
 const styles = StyleSheet.create({
   header: {
-    marginTop: 70,
+    marginTop: 100,
   },
   title: {
     alignItems: 'center',
