@@ -1,11 +1,35 @@
 import { Button, Image, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Event, getEvent } from "../utils/api";
 
-export function EventDetails() {
+export function EventDetails(id: string) {
+  const [event, setEvent] = useState<Event | null>(null);
+
+  useEffect(() => {
+    const retrieveEvent = async () => {
+      try {
+        const snapshot = await getEvent(id);
+        if (snapshot.exists()) {
+          const eventData = snapshot.data() as Event;
+          setEvent(eventData);
+        } else {
+          console.log("no event");
+        }
+      } catch (error) {
+        console.error("error:", error);
+      }
+    };
+    retrieveEvent();
+  }, [id]);
+
+  if (!event) {
+    return <Text>Loading...</Text>; // Loading state
+  }
+
   return (
     <View>
-      <Text>Title</Text>
-      <Image style={} source={}></Image>
+      <Text>{event.name}</Text>
+      <Image source={{uri: event.thumbnail}}></Image>
       <View>
         <Text>About This Event</Text>
         <Text>Description</Text>
