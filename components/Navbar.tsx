@@ -4,6 +4,8 @@ import HomeScreen from "../screens/HomeScreen";
 import { FontAwesome } from "@expo/vector-icons";
 import SearchScreen from "../screens/SearchScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import ProfileScreen from "../screens/ProfileScreen";
+
 import { Settings } from "react-native";
 import EventsScreen from '../screens/EventsScreen';
 import { EventsTopBar } from "./EventsTopBar";
@@ -43,7 +45,7 @@ export default function Navbar() {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Event" component={EventsTopBar} />
-      <Tab.Screen name="Profile" component={SearchScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
