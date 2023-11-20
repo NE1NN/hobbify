@@ -2,13 +2,13 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import History from "../screens/Events/History";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React from "react";
-import { StyleSheet } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 
 const Tab = createMaterialTopTabNavigator();
 
 export function EventsTopBar() {
   return (
-    <Tab.Navigator style={styles.SafeAreaView}>
+    <Tab.Navigator screenOptions={{}} style={styles.SafeAreaView}>
       <Tab.Screen name="History" component={History} />
       <Tab.Screen name="Ongoing" component={History} />
       <Tab.Screen name="Intrested" component={History} />

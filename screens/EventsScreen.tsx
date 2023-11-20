@@ -1,33 +1,14 @@
-import React, { useEffect, useState } from "react";
-import {
-  Button,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import React from "react";
+import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import EventCard from "../components/EventCard";
-import { getEvents } from "../utils/api";
-import { Event } from "../utils/api";
-import UserEventCard from "../components/UserEventCard";
 import { EventsTopBar } from "../components/EventsTopBar";
 
 export default function EventsScreen() {
-  const [events, setEvents] = useState<Event[]>([]);
-
-  useEffect(() => {
-    const populateEvents = async () => {
-      const events = await getEvents();
-      setEvents(events);
-    };
-    populateEvents();
-  }, []);
-
   return (
     <SafeAreaView style={styles.SafeAreaView}>
-      <EventsTopBar />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <EventsTopBar />
+      </ScrollView>
     </SafeAreaView>
   );
 }
