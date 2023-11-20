@@ -148,10 +148,13 @@ export const createEvent = async (props: createEventDetails) => {
     location,
     members: [creatorId],
     name,
+    desc,
     nameLowered: name.toLowerCase(),
     thumbnail,
     date,
-    time
+    time,
+    isPublic,
+    membersLimit: members
   };
 
   await addDoc(eventsCol, event);
