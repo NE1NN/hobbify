@@ -146,7 +146,7 @@ export const createEvent = async (props: createEventDetails) => {
   let event = {
     creatorId: 1,
     location,
-    members: [],
+    members: [creatorId],
     name,
     nameLowered: name.toLowerCase(),
     thumbnail,
