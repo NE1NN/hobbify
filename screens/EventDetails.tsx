@@ -1,9 +1,26 @@
 import { Button, Image, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Event, getEvent } from "../utils/api";
+import { FontAwesome } from "@expo/vector-icons";
 
 export function EventDetails(id: string) {
   const [event, setEvent] = useState<Event | null>(null);
+  const [readMore, setReadMore] = useState(false);
+
+  const handleReadMore = () => {
+    setReadMore(!readMore);
+  };
+
+  const shortenDescription = (description: string) => {
+    if (description.length > 100) {
+      return `${description.substring(0, 100)}...`;
+    }
+    return description;
+  };
+
+  const handleLike = () => {}
+
+  const handleJoin = () => {}
 
   useEffect(() => {
     const retrieveEvent = async () => {
@@ -29,20 +46,26 @@ export function EventDetails(id: string) {
   return (
     <View>
       <Text>{event.name}</Text>
-      <Image source={{uri: event.thumbnail}}></Image>
+      <Image source={{ uri: event.thumbnail }}></Image>
       <View>
         <Text>About This Event</Text>
-        <Text>Description</Text>
-        <Button>Read More</Button>
+        <Text>
+          {" "}
+          {readMore ? event.description : shortenDescription(event.description)}
+        </Text>
+        <Button
+          title={readMore ? "Read Less" : "Read More"}
+          onPress={handleReadMore}
+        />
       </View>
       <View>
-        <Text>Icon</Text>
-        <Text>Date</Text>
-        <Text>Time</Text>
+        <FontAwesome name="calendar" />
+        <Text>{event.date.toLocaleDateString()}</Text>
+        <Text>{event.time.toString()}</Text>
       </View>
       <View>
-        <Text>Icon</Text>
-        <Text>Location</Text>
+      <FontAwesome name="map-marker" />
+        <Text>{event.location}</Text>
       </View>
       <View>
         <Text>Members</Text>
@@ -51,8 +74,8 @@ export function EventDetails(id: string) {
         <Text>and More</Text>
       </View>
       <View>
-        <Button>Like</Button>
-        <Button>Join</Button>
+        <Button title={"Like"} onPress={handleLike}/>
+        <Button title={"Join"} onPress={handleJoin}/>
       </View>
     </View>
   );
