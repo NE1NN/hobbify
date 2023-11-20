@@ -6,6 +6,7 @@ import SearchScreen from "../screens/SearchScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import { Settings } from "react-native";
 import EventsScreen from '../screens/EventsScreen';
+import { EventsTopBar } from "./EventsTopBar";
 
 const Tab = createBottomTabNavigator();
 
@@ -41,7 +42,7 @@ export default function Navbar() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
-      <Tab.Screen name="Event" component={EventsScreen} />
+      <Tab.Screen name="Event" component={EventsTopBar} />
       <Tab.Screen name="Profile" component={SearchScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
