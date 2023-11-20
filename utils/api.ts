@@ -86,20 +86,23 @@ export const loginUser = async (username: string, password: string) => {
     where("password", "==", password )
   );
   const querySnapshot = await getDocs(q);
-
-  if (!querySnapshot.empty) {
-    const userDoc = querySnapshot.docs[0];
-    const userData = userDoc.data(); // Retrieve the data of the user document
-
-    const userId = userData.userId; // Access the 'userId' field
-
-    return {
-      token: generateSimpleToken(),
-      userId: userId // Use the 'userId' from the document data
-    }; 
-
-  } else {
-    return null;
+  try {
+    if (!querySnapshot.empty) {
+      const userDoc = querySnapshot.docs[0];
+      const userData = userDoc.data(); // Retrieve the data of the user document
+  
+      const userId = userData.userId; // Access the 'userId' field
+  
+      return {
+        token: generateSimpleToken(),
+        userId: userId // Use the 'userId' from the document data
+      }; 
+  
+    } else {
+      return null;
+    }
+  } catch (e) {
+    console.log('meki', e)
   }
 }
 

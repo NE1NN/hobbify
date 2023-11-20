@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { StyleSheet, Text, TextInput, View, Button, Image, TouchableOpacity } from 'react-native';
 import { registerUser } from '../utils/api';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
+import AuthContext from '../AuthContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
 
@@ -13,15 +14,22 @@ const Register = ({ navigation }: Props) => {
   const [confirmPassword, setConfirmPassword] = useState<string>('')
   const [isPasswordSame, setIsPasswordSame] = useState<boolean>(true)
 
+  
+  const contextValue = useContext(AuthContext)
+
+  if (!contextValue) {
+    throw new Error ('Error params not passed')
+  }
+  
+  const {setLoggedIn} = contextValue
+  
   const handleRegister = async () => {
     if (password === confirmPassword) {
       const { token, userId } = await registerUser(username, email, password)
-      
-      navigation.navigate("Home", { userId })
+      setLoggedIn(userId)
     }
     else setIsPasswordSame(false)
   }
-
   return (
     <View style={styles.header}>
       <View style={styles.image}>
@@ -89,7 +97,7 @@ const Register = ({ navigation }: Props) => {
 
 const styles = StyleSheet.create({
   header: {
-    marginTop: 40,
+    marginTop: 100,
   },
   title: {
     alignItems: 'center',
