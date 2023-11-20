@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "./screens/HomeScreen";
 import Navbar from "./components/Navbar";
 import SettingsScreen from "./screens/SettingsScreen";
+import ProfileScreen from "./screens/ProfileScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Register from "./screens/Register";
 import Login from "./screens/Login";
