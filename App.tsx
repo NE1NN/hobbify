@@ -10,6 +10,7 @@ import Register from "./screens/Register";
 import Login from "./screens/Login";
 import { useState } from "react";
 import AuthContext from "./AuthContext";
+import CreateEvent from "./screens/CreateEvent";
 
 export type RootStackParamList = {
   Register: undefined;
@@ -17,6 +18,7 @@ export type RootStackParamList = {
   Login: undefined;
   Navbar: undefined;
   Settings: undefined;
+  CreateEvent: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -36,7 +38,7 @@ export default function App() {
     <AuthContext.Provider value={{ userId: userId, setLoggedIn: setLoggedin }}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Register">
-          {isSignedIn ? (
+          {/* {isSignedIn ? (
             <>
               <Stack.Screen
                 name="Navbar"
@@ -57,7 +59,12 @@ export default function App() {
                 options={{ headerShown: false }}
               />
             </>
-          )}
+          )} */}
+          <Stack.Screen 
+            name="CreateEvent"
+            component={CreateEvent}
+            options={{ headerShown: false }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthContext.Provider>
