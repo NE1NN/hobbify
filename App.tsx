@@ -9,7 +9,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Register from "./screens/Register";
 import Login from "./screens/Login";
 import { useState } from "react";
-import AuthContext from "./authContext";
+import AuthContext from "./AuthContext";
 
 export type RootStackParamList = {
   Register: undefined;

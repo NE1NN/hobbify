@@ -6,7 +6,7 @@ import { getEvents, getUserDetail } from '../utils/api';
 import { Event } from '../utils/api';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
-import AuthContext from '../authContext';
+import AuthContext from '../AuthContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
