@@ -11,7 +11,8 @@ import Login from "./screens/Login";
 import { useState, useEffect } from "react";
 import AuthContext from "./AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import React from "react";
+import EventDetails from "./screens/Events/EventDetails";
 
 export type RootStackParamList = {
   Register: undefined;
