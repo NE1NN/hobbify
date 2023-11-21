@@ -84,6 +84,20 @@ export const getUpcomingEvents = async() => {
   );
   return events;
 }
+export const getMyEvents = async(userId: number) => {
+  const eventsCol = collection(db, 'events');
+  const eventsQuery = query(eventsCol, where('creatorId', '==', userId))
+  const eventsDocs = await getDocs(eventsQuery);
+
+  const events: Event[] = eventsDocs.docs.map(
+    (doc) =>
+      ({
+        eventId: doc.id,
+        ...doc.data(),
+      } as Event)
+  );
+  return events;
+}
 
 export const searchEvent = async (searchValue: string) => {
   const eventsCol = collection(db, 'events');
