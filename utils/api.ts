@@ -96,6 +96,7 @@ export const getInterestedEvents = async (userId: number) => {
 
     const interestedEvents: string[] = userData.interestedEvents;
     let eventData: Event[] = [];
+
     const eventPromises = interestedEvents.map(async (eventId) => {
       const eventDoc = doc(db, 'events', eventId);
       const eventSnapshot = await getDoc(eventDoc);
@@ -106,7 +107,8 @@ export const getInterestedEvents = async (userId: number) => {
         } as Event);
       }
     });
-    await Promise.all(eventPromises)
+
+    await Promise.all(eventPromises);
     return eventData;
   } else {
     return null;
