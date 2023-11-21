@@ -19,6 +19,7 @@ export type RootStackParamList = {
   Navbar: undefined;
   Settings: undefined;
   EventDetails: { id: string };
+  CreateEvent: undefined
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
