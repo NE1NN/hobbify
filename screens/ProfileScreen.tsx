@@ -8,7 +8,7 @@ import {
   Button,
   Image,
 } from "react-native";
-import { useState } from "react";
+import React, { useState } from "react";
 import dp from "../assets/Profile/dp.jpg";
 import { Ionicons } from "@expo/vector-icons";
 
