@@ -11,6 +11,7 @@ import Login from "./screens/Login";
 import React, { useState } from "react";
 import AuthContext from "./AuthContext";
 import { EventDetails } from "./screens/Events/EventDetails";
+import CreateEvent from "./screens/CreateEvent";
 
 export type RootStackParamList = {
   Register: undefined;
@@ -19,7 +20,8 @@ export type RootStackParamList = {
   Navbar: undefined;
   Settings: undefined;
   EventDetails: { id: string };
-  CreateEvent: undefined
+  CreateEvent: undefined;
+  History: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -64,6 +66,11 @@ export default function App() {
           <Stack.Screen
             name="EventDetails"
             component={EventDetails}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="CreateEvent"
+            component={CreateEvent}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

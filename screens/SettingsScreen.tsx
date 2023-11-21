@@ -7,7 +7,7 @@ import {
   ImageBackground,
   Button,
 } from "react-native";
-import { useState } from "react";
+import React, { useState } from "react";
 import ellipse from "../assets/Settings/ellipse.png";
 import darkEllipse from "../assets/Settings/dark_ellipse.png";
 

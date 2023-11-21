@@ -84,6 +84,7 @@ const CreateEvent = ({ navigation }: Props) => {
       isPublic,
       membersLimit: Number(members)
     });
+    navigation.navigate('History')
   }
 
   return (

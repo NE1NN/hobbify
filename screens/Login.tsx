@@ -34,7 +34,7 @@ const Login = ({ navigation }: Props) => {
 
   const handleForgetPassword = () => {
     // FUTURE IMPLEMENTATION
-    console.log('yang baca kontol')                              
+    console.log('Future Implementation')                              
   }
 
   return (
