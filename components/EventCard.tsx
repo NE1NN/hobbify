@@ -9,7 +9,8 @@ type EventCardProps = {
   name: string;
   thumbnail: string;
   location: string;
-  time: Timestamp;
+  time: string;
+  date: string;
   eventId: string;
 };
 
@@ -18,6 +19,7 @@ export default function EventCard({
   thumbnail,
   location,
   time,
+  date,
   eventId,
 }: EventCardProps) {
   const handlePress = async () => {
@@ -35,8 +37,8 @@ export default function EventCard({
           <Text>{location}</Text>
         </View>
         <View>
-          <Text>{timestampToString(time, 'date')}</Text>
-          <Text>at {timestampToString(time, 'time')}</Text>
+          <Text>{date}</Text>
+          <Text>at {time}</Text>
         </View>
       </View>
     </TouchableOpacity>

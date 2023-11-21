@@ -16,18 +16,19 @@ export type Event = {
   name: string;
   location: string;
   creatorId: number;
-  time: Timestamp;
+  time: string;
+  date: string;
 };
 
-export type createEventDetails = {
+export type createEventProps = {
   creatorId: number;
   thumbnail: string;
   name: string;
   desc: string;
   location: string;
   members: string;
-  date: Date;
-  time: Date;
+  date: string;
+  time: string;
   isPublic: boolean;
 }
 
@@ -139,7 +140,7 @@ export const getUserDetail = async (userId: number) => {
   }
 }
 
-export const createEvent = async (props: createEventDetails) => {
+export const createEvent = async (props: createEventProps) => {
   const { creatorId, thumbnail, name, desc, location, members, date, time, isPublic } = props
   const eventsCol = collection(db, "events");
 

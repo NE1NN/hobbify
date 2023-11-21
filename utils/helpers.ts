@@ -36,3 +36,9 @@ export const generateUserId = () => {
   const randomNum = Math.floor(Math.random() * 10000);
   return timestamp + randomNum;
 }
+
+export const generateEventId = () => {
+  const timestamp = Date.now();
+  const randomNum = Math.floor(Math.random() * 100000);
+  return timestamp + randomNum;
+};

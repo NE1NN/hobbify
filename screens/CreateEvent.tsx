@@ -77,8 +77,8 @@ const CreateEvent = ({ navigation }: Props) => {
       desc,
       location,
       members,
-      date,
-      time,
+      date: formatDate(date),
+      time: formatTime(time),
       isPublic,
     });
   }

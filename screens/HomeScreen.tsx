@@ -50,6 +50,7 @@ export default function HomeScreen() {
               name={event.name}
               location={event.location}
               thumbnail={event.thumbnail}
+              date={event.date}
               time={event.time}
               eventId={event.eventId}
             />
