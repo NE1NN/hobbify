@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import UserEventCard from "../components/UserEventCard";
 import ToggleButton from "../components/RatingButton";
 import userIcon from "../assets/icon.png";
+import { submitRating } from "../utils/api";
+import AuthContext from "../AuthContext";
 
 const adjectives = [
   "Kind",
@@ -21,7 +23,13 @@ const adjectives = [
 ];
 
 const RatingScreen = (uId: number, eventId: number) => {
-  const [searchValue, setSearchValue] = useState<string>("");
+  const contextValue = useContext(AuthContext);
+  if (!contextValue) {
+    throw new Error("No value");
+  }
+
+  const raterId = contextValue.userId;
+
   const [selectedButtons, setSelectedButtons] = useState<string[]>([]);
 
   // Function to handle button press
@@ -32,6 +40,10 @@ const RatingScreen = (uId: number, eventId: number) => {
       setSelectedButtons([...selectedButtons, label]);
     }
   };
+
+  const handleSubmit = () => {
+    submitRating(raterId, uId, selectedButtons)
+  }
 
   return (
     <SafeAreaView style={styles.SafeAreaView}>
@@ -61,9 +73,7 @@ const RatingScreen = (uId: number, eventId: number) => {
             ? styles.buttonActive
             : styles.buttonInactive,
         ]}
-        onPress={() => {
-          /* Handle confirm action here */
-        }}
+        onPress={handleSubmit}
       >
         <Text style={styles.buttonText}>Confirm</Text>
       </TouchableOpacity>
@@ -110,10 +120,10 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   buttonActive: {
-    backgroundColor: "#28B67E", // Light color
+    backgroundColor: "#28B67E", 
   },
   buttonInactive: {
-    backgroundColor: "#1D4C4F", // Dark color
+    backgroundColor: "#1D4C4F",
   },
   buttonText: {},
   heading: {
