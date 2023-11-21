@@ -11,6 +11,7 @@ import Login from "./screens/Login";
 import { useState } from "react";
 import AuthContext from "./AuthContext";
 import { EventDetails } from "./screens/Events/EventDetails";
+import RatingScreen from "./screens/RatingScreen";
 
 export type RootStackParamList = {
   Register: undefined;
@@ -43,7 +44,7 @@ export default function App() {
             <>
               <Stack.Screen
                 name="Navbar"
-                component={Navbar}
+                component={RatingScreen}
                 options={{ headerShown: false }}
               />
             </>
