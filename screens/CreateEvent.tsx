@@ -79,6 +79,7 @@ const CreateEvent = ({ navigation }: Props) => {
       date,
       time,
       isPublic,
+      membersLimit: Number(members)
     });
   }
 

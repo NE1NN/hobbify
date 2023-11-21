@@ -42,6 +42,7 @@ export type createEventDetails = {
   date: Date;
   time: Date;
   isPublic: boolean;
+  membersLimit: number;
 };
 
 export const getEvents = async () => {
@@ -152,8 +153,17 @@ export const getUserDetail = async (userId: number) => {
 };
 
 export const createEvent = async (props: createEventDetails) => {
-  const { creatorId, thumbnail, name, desc, location, date, time, isPublic } =
-    props;
+  const {
+    creatorId,
+    thumbnail,
+    name,
+    desc,
+    location,
+    date,
+    time,
+    isPublic,
+    membersLimit,
+  } = props;
   const eventsCol = collection(db, "events");
 
   // Extracting date parts
@@ -190,7 +200,7 @@ export const createEvent = async (props: createEventDetails) => {
     thumbnail,
     time: timestamp,
     isPublic,
-    membersLimit: 0,
+    membersLimit,
     likes: [],
   };
 
