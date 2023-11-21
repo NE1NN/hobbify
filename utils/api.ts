@@ -1,6 +1,16 @@
 import * as FileSystem from 'expo-file-system';
 const filePath = FileSystem.documentDirectory + 'data.json';
-import { collection, getDocs, query, where, doc, getDoc, setDoc, addDoc } from 'firebase/firestore';
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  doc,
+  getDoc,
+  setDoc,
+  addDoc,
+  updateDoc,
+} from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { Timestamp } from 'firebase/firestore';
 import { generateSimpleToken, generateUserId } from './helpers';
@@ -12,11 +22,16 @@ type User = {
 
 export type Event = {
   eventId: string;
+  creatorId: number;
   thumbnail: string;
   name: string;
+  nameLowered: string;
+  description: string;
   location: string;
-  creatorId: number;
   time: Timestamp;
+  isPublic: boolean;
+  members: number[];
+  likes: number[];
 };
 
 export type createEventDetails = {
@@ -25,11 +40,11 @@ export type createEventDetails = {
   name: string;
   desc: string;
   location: string;
-  members: string;
   date: Date;
   time: Date;
   isPublic: boolean;
-}
+  membersLimit: number;
+};
 
 export const getEvents = async () => {
   const eventsCol = collection(db, 'events');
@@ -57,16 +72,20 @@ export const searchEvent = async (searchValue: string) => {
 };
 
 export const getEvent = async (eventId: string) => {
-  const eventsCol = collection(db, 'events')
-  const eventRef = doc(eventsCol, eventId)
-  const eventDoc = await getDoc(eventRef)
-  return eventDoc
-}
+  const eventsCol = collection(db, 'events');
+  const eventRef = doc(eventsCol, eventId);
+  const eventDoc = await getDoc(eventRef);
+  return eventDoc;
+};
 
-export const registerUser = async (username: string, email: string, password: string) => {
-  const userCol = collection(db, 'users')
+export const registerUser = async (
+  username: string,
+  email: string,
+  password: string
+) => {
+  const userCol = collection(db, 'users');
 
-  const usernameQuery = query(userCol, where("username", "==", username));
+  const usernameQuery = query(userCol, where('username', '==', username));
   const querySnapshot = await getDocs(usernameQuery);
 
   if (!querySnapshot.empty) {
@@ -80,84 +99,133 @@ export const registerUser = async (username: string, email: string, password: st
     joinedEvents: [],
     username,
     password,
-    userId: generateUserId()
-  }
+    userId: generateUserId(),
+  };
 
-  await addDoc(userCol, user)
+  await addDoc(userCol, user);
   return {
     token: generateSimpleToken(),
-    userId: user.userId
-  }
-}
+    userId: user.userId,
+  };
+};
 
 export const loginUser = async (username: string, password: string) => {
-  const usersCol = collection(db, 'users')
+  const usersCol = collection(db, 'users');
   const q = query(
-    usersCol, 
-    where("username", "==", username),
-    where("password", "==", password )
+    usersCol,
+    where('username', '==', username),
+    where('password', '==', password)
   );
   const querySnapshot = await getDocs(q);
   try {
     if (!querySnapshot.empty) {
       const userDoc = querySnapshot.docs[0];
       const userData = userDoc.data(); // Retrieve the data of the user document
-  
+
       const userId = userData.userId; // Access the 'userId' field
-  
+
       return {
         token: generateSimpleToken(),
-        userId: userId // Use the 'userId' from the document data
-      }; 
-  
+        userId: userId, // Use the 'userId' from the document data
+      };
     } else {
       return null;
     }
   } catch (e) {
-    console.log('meki', e)
+    console.log('meki', e);
   }
-}
+};
 
 export const getUserDetail = async (userId: number) => {
-  const usersCol = collection(db, 'users')
-  const q = query(
-    usersCol, 
-    where("userId", "==", userId),
-  );
+  const usersCol = collection(db, 'users');
+  const q = query(usersCol, where('userId', '==', userId));
   const querySnapshot = await getDocs(q);
 
   if (!querySnapshot.empty) {
     const userDoc = querySnapshot.docs[0];
     const userData = userDoc.data(); // Retrieve the data of the user document
 
-    const username = userData.username; 
+    const username = userData.username;
 
-    return username
-
+    return username;
   } else {
     return null;
   }
-}
+};
 
 export const createEvent = async (props: createEventDetails) => {
-  const { creatorId, thumbnail, name, desc, location, members, date, time, isPublic } = props
-  const eventsCol = collection(db, "events");
+  const {
+    creatorId,
+    thumbnail,
+    name,
+    desc,
+    location,
+    date,
+    time,
+    isPublic,
+    membersLimit,
+  } = props;
+  const eventsCol = collection(db, 'events');
+
+  // Extracting date parts
+  let year = date.getFullYear();
+  let month = date.getMonth();
+  let day = date.getDate();
+
+  // Extracting time parts
+  let hours = time.getHours();
+  let minutes = time.getMinutes();
+  let seconds = time.getSeconds();
+  let milliseconds = time.getMilliseconds();
+
+  // Creating a new Date object with combined date and time
+  let combinedDateTime = new Date(
+    year,
+    month,
+    day,
+    hours,
+    minutes,
+    seconds,
+    milliseconds
+  );
+
+  const timestamp = Timestamp.fromDate(combinedDateTime);
 
   let event = {
-    creatorId: 1,
+    creatorId,
     location,
     members: [creatorId],
     name,
     description: desc,
     nameLowered: name.toLowerCase(),
     thumbnail,
-    date,
-    time,
+    time: timestamp,
     isPublic,
-    membersLimit: members,
-    likes: []
+    membersLimit,
+    likes: [],
   };
 
   await addDoc(eventsCol, event);
-  return {}
-}
+  return {};
+};
+
+export const updateProfPic = async (newProfPic: string, userId: number) => {
+  const usersCol = collection(db, 'users');
+  const userQuery = query(usersCol, where('userId', '==', userId));
+
+  try {
+    const querySnapshot = await getDocs(userQuery);
+    if (querySnapshot.empty) {
+      console.log('No user found with the given userId');
+      return;
+    }
+
+    const userDoc = querySnapshot.docs[0];
+    const userDocRef = userDoc.ref;
+
+    await updateDoc(userDocRef, { profPic: newProfPic });
+    console.log('Profile picture updated successfully');
+  } catch (err) {
+    console.error('Failed updating profile picture', err);
+  }
+};
