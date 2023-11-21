@@ -34,8 +34,11 @@ const CreateEvent = ({ navigation }: Props) => {
   const [isPublic, setIsPublic] = useState(false)
 
   const contextValue = useContext(AuthContext);
-  // const { userId } = contextValue
-  const creatorId = contextValue ? contextValue.userId : 0;
+  if (!contextValue) {
+    throw new Error('No value')
+  }
+
+  const creatorId = contextValue.userId;
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
