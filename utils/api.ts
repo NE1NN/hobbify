@@ -19,6 +19,18 @@ export type Event = {
   time: Timestamp;
 };
 
+export type createEventDetails = {
+  creatorId: number;
+  thumbnail: string;
+  name: string;
+  desc: string;
+  location: string;
+  members: string;
+  date: Date;
+  time: Date;
+  isPublic: boolean;
+}
+
 export const getEvents = async () => {
   const eventsCol = collection(db, 'events');
   const eventsDocs = await getDocs(eventsCol);
@@ -125,4 +137,27 @@ export const getUserDetail = async (userId: number) => {
   } else {
     return null;
   }
+}
+
+export const createEvent = async (props: createEventDetails) => {
+  const { creatorId, thumbnail, name, desc, location, members, date, time, isPublic } = props
+  const eventsCol = collection(db, "events");
+
+  let event = {
+    creatorId: 1,
+    location,
+    members: [creatorId],
+    name,
+    description: desc,
+    nameLowered: name.toLowerCase(),
+    thumbnail,
+    date,
+    time,
+    isPublic,
+    membersLimit: members,
+    likes: []
+  };
+
+  await addDoc(eventsCol, event);
+  return {}
 }
