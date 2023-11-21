@@ -1,24 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { Event, getEvent } from "../utils/api";
+import { Member } from "./Member";
 
-export function Members({ route }: { route: any }) {
-  const id = route.params.id;
+export function Members({ eventId }: { eventId: number }) {
+  const id = eventId.toString()
 
   const [event, setEvent] = useState<Event | null>(null);
 
-  const Member = (uId: string) => {
-    return (
-      <View>
-        <View>
-          <Text>Image</Text>
-          <Text>UserName</Text>
-        </View>
-        <TouchableOpacity>
-          <Text>Rate</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
+  useEffect(() => {
+    const retrieveEvent = async () => {
+      try {
+        const snapshot = await getEvent(id);
+        if (snapshot.exists()) {
+          const eventData = snapshot.data() as Event;
+          setEvent(eventData);
+          console.log(eventData);
+        } else {
+          console.log("no event");
+        }
+      } catch (error) {
+        console.error("error:", error);
+      }
+    };
+    retrieveEvent();
+  }, [id]);
 
-  return;
+  if (!event) {
+    return <Text>Loading...</Text>; // Loading state
+  }
+
+  return (
+    <View>
+      {event.members.map((memberId) => (
+        <Member key={memberId} uId={memberId} /> // Render Member component for each member ID
+      ))}
+    </View>
+  );
 }

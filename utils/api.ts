@@ -5,9 +5,10 @@ import { db } from '../firebaseConfig';
 import { Timestamp } from 'firebase/firestore';
 import { generateSimpleToken, generateUserId } from './helpers';
 
-type User = {
+export type User = {
   userId: number;
   name: string;
+  profilePicture: string;
 };
 
 export type Event = {

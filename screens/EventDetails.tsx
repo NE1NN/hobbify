@@ -12,13 +12,14 @@ import React, { useEffect, useState } from "react";
 import { Event, getEvent } from "../utils/api";
 import { FontAwesome } from "@expo/vector-icons";
 import { timestampToString } from "../utils/helpers";
+import { Members } from "./Members";
 
 export function EventDetails({ route }: { route: any }) {
   const id = route.params.id;
 
   const [event, setEvent] = useState<Event | null>(null);
   const [readMore, setReadMore] = useState(false);
-  const [showMembers, setShowMembers] = useState(false)
+  const [showMembers, setShowMembers] = useState(false);
 
   const handleReadMore = () => {
     setReadMore(!readMore);
@@ -40,8 +41,8 @@ export function EventDetails({ route }: { route: any }) {
   };
 
   const handleShowMembers = () => {
-
-  }
+    setShowMembers(!showMembers);
+  };
 
   useEffect(() => {
     const retrieveEvent = async () => {
@@ -99,16 +100,23 @@ export function EventDetails({ route }: { route: any }) {
               <Text style={styles.DateText}>{event.location}</Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.MembersContainer} onPress={handleShowMembers}>
-            <View style={styles.MemberTitleCountContainer}>
-              <Text style={styles.MemberText}>Members</Text>
-              <Text style={styles.MemberText}>2/20</Text>
-            </View>
-            <View style={styles.IconsContainer}>
-              <Text>Icons</Text>
-              <Text style={styles.MemberText}>and More</Text>
-            </View>
-          </TouchableOpacity>
+          {showMembers ? (
+            <Members eventId={id} />
+          ) : (
+            <TouchableOpacity
+              style={styles.MembersContainer}
+              onPress={handleShowMembers}
+            >
+              <View style={styles.MemberTitleCountContainer}>
+                <Text style={styles.MemberText}>Members</Text>
+                <Text style={styles.MemberText}>2/20</Text>
+              </View>
+              <View style={styles.IconsContainer}>
+                <Text>Icons</Text>
+                <Text style={styles.MemberText}>and More</Text>
+              </View>
+            </TouchableOpacity>
+          )}
           <View style={styles.LikeJoinContainer}>
             <TouchableOpacity style={styles.LikeButton} onPress={handleLike}>
               <FontAwesome name="heart" size={41} />
@@ -126,7 +134,7 @@ const styles = StyleSheet.create({
   SafeAreaView: {
     marginHorizontal: 25,
     marginTop: 30,
-    height: '100%'
+    height: "100%",
   },
   DetailsContainer: {
     alignItems: "center",
@@ -231,5 +239,5 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 24,
     fontWeight: "600",
-  }
+  },
 });
