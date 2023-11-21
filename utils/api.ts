@@ -16,6 +16,7 @@ import {
 import { db } from "../firebaseConfig";
 import { Timestamp } from "firebase/firestore";
 import { generateSimpleToken, generateUserId } from "./helpers";
+import { async } from '@firebase/util';
 
 export type User = {
   userId: number;
@@ -63,6 +64,26 @@ export const getEvents = async () => {
   );
   return events;
 };
+
+export const getUpcomingEvents = async() => {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0);
+
+  const todayTimestamp = Timestamp.fromDate(today)
+
+  const eventsCol = collection(db, 'events');
+  const eventsQuery = query(eventsCol, where('time', '>', todayTimestamp))
+  const eventsDocs = await getDocs(eventsQuery);
+
+  const events: Event[] = eventsDocs.docs.map(
+    (doc) =>
+      ({
+        eventId: doc.id,
+        ...doc.data(),
+      } as Event)
+  );
+  return events;
+}
 
 export const searchEvent = async (searchValue: string) => {
   const eventsCol = collection(db, 'events');
