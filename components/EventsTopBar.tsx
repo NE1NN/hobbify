@@ -11,7 +11,7 @@ export function EventsTopBar() {
     <Tab.Navigator screenOptions={{}} style={styles.SafeAreaView}>
       <Tab.Screen name="History" component={History} />
       <Tab.Screen name="Ongoing" component={History} />
-      <Tab.Screen name="Intrested" component={History} />
+      <Tab.Screen name="Interested" component={History} />
       <Tab.Screen name="My Events" component={History} />
     </Tab.Navigator>
   );
