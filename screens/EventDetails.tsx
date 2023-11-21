@@ -8,11 +8,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { Event, getEvent } from "../utils/api";
+import React, { useContext, useEffect, useState } from "react";
+import { Event, getEvent, likeEvent } from "../utils/api";
 import { FontAwesome } from "@expo/vector-icons";
 import { timestampToString } from "../utils/helpers";
 import { Members } from "./Members";
+import AuthContext from "../AuthContext";
 
 export function EventDetails({ route }: { route: any }) {
   const id = route.params.id;
@@ -20,6 +21,14 @@ export function EventDetails({ route }: { route: any }) {
   const [event, setEvent] = useState<Event | null>(null);
   const [readMore, setReadMore] = useState(false);
   const [showMembers, setShowMembers] = useState(false);
+  const [liked, setLiked] = useState(false);
+
+  const contextValue = useContext(AuthContext);
+  if (!contextValue) {
+    throw new Error("No value");
+  }
+
+  const uId = contextValue.userId;
 
   const handleReadMore = () => {
     setReadMore(!readMore);
@@ -32,8 +41,13 @@ export function EventDetails({ route }: { route: any }) {
     return description;
   };
 
-  const handleLike = () => {
-    // TODO
+  const handleLike = async () => {
+    try {
+      await likeEvent(id, uId);
+      setLiked(!liked);
+    } catch (error) {
+      console.log("error", error);
+    }
   };
 
   const handleJoin = () => {
@@ -62,6 +76,14 @@ export function EventDetails({ route }: { route: any }) {
     retrieveEvent();
   }, [id]);
 
+  useEffect(() => {
+    if (event && event.likes.includes(uId)) {
+      setLiked(true);
+    } else {
+      setLiked(false);
+    }
+  }, [event, uId]);
+
   if (!event) {
     return <Text>Loading...</Text>; // Loading state
   }
@@ -70,62 +92,73 @@ export function EventDetails({ route }: { route: any }) {
     <SafeAreaView style={styles.SafeAreaView}>
       <ScrollView>
         <Text style={styles.Title}>{event.name}</Text>
-        <View style={styles.DetailsContainer}>
-          <Image source={{ uri: event.thumbnail }} style={styles.Image} />
-          <View style={styles.SubtitleDescriptionContainer}>
-            <Text style={styles.Subtitle}>About This Event</Text>
-            <Text style={styles.Description}>
-              {readMore ? event.desc : shortenDescription(event.desc)}
-            </Text>
-            <TouchableOpacity onPress={handleReadMore}>
-              <Text style={styles.ReadMore}>
-                {readMore ? "Read Less" : "Read More"}
+        <Image source={{ uri: event.thumbnail }} style={styles.Image} />
+
+        {showMembers ? (
+          <Members eventId={id} />
+        ) : (
+          <View style={styles.DetailsContainer}>
+            <View style={styles.SubtitleDescriptionContainer}>
+              <Text style={styles.Subtitle}>About This Event</Text>
+              <Text style={styles.Description}>
+                {readMore
+                  ? event.description
+                  : shortenDescription(event.description)}
               </Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.DateLocationContainer}>
-            <View style={styles.DateContainer}>
-              <FontAwesome name="calendar" style={styles.DateIcon} />
-              <View>
-                <Text style={styles.DateText}>
-                  {timestampToString(event.time, "date")}
+              <TouchableOpacity onPress={handleReadMore}>
+                <Text style={styles.ReadMore}>
+                  {readMore ? "Read Less" : "Read More"}
                 </Text>
-                <Text style={styles.TimeText}>
-                  at {timestampToString(event.time, "time")}
-                </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.DateLocationContainer}>
+              <View style={styles.DateContainer}>
+                <FontAwesome name="calendar" style={styles.DateIcon} />
+                <View>
+                  <Text style={styles.DateText}>
+                    {timestampToString(event.time, "date")}
+                  </Text>
+                  <Text style={styles.TimeText}>
+                    at {timestampToString(event.time, "time")}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.DateContainer}>
+                <FontAwesome name="map-marker" style={styles.MapIcon} />
+                <Text style={styles.DateText}>{event.location}</Text>
               </View>
             </View>
-            <View style={styles.DateContainer}>
-              <FontAwesome name="map-marker" style={styles.MapIcon} />
-              <Text style={styles.DateText}>{event.location}</Text>
-            </View>
-          </View>
-          {showMembers ? (
-            <Members eventId={id} />
-          ) : (
+
             <TouchableOpacity
               style={styles.MembersContainer}
               onPress={handleShowMembers}
             >
               <View style={styles.MemberTitleCountContainer}>
                 <Text style={styles.MemberText}>Members</Text>
-                <Text style={styles.MemberText}>2/20</Text>
+                <Text style={styles.MemberText}>
+                  {event.members.length}/{event.membersLimit}
+                </Text>
               </View>
               <View style={styles.IconsContainer}>
                 <Text>Icons</Text>
                 <Text style={styles.MemberText}>and More</Text>
               </View>
             </TouchableOpacity>
-          )}
-          <View style={styles.LikeJoinContainer}>
-            <TouchableOpacity style={styles.LikeButton} onPress={handleLike}>
-              <FontAwesome name="heart" size={41} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.JoinButton} onPress={handleJoin}>
-              <Text style={styles.JoinText}>Join Event</Text>
-            </TouchableOpacity>
+
+            <View style={styles.LikeJoinContainer}>
+              <TouchableOpacity style={styles.LikeButton} onPress={handleLike}>
+                {liked ? (
+                  <FontAwesome name="heart" size={41} color={"red"} />
+                ) : (
+                  <FontAwesome name="heart-o" size={41} />
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.JoinButton} onPress={handleJoin}>
+                <Text style={styles.JoinText}>Join Event</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -155,7 +188,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   Image: {
-    width: 400,
+    width: "100%",
     height: 200,
     resizeMode: "cover",
     borderRadius: 25,
