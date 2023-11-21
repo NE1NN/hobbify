@@ -35,7 +35,7 @@ export default function EventCard({
           <Text>{location}</Text>
         </View>
         <View>
-          <Text>{even}</Text>
+          <Text>{timestampToString(time, 'date')}</Text>
           <Text>at {timestampToString(time, 'time')}</Text>
         </View>
       </View>
