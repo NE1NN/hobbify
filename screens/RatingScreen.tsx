@@ -1,5 +1,12 @@
 import React, { useContext, useState } from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import UserEventCard from "../components/UserEventCard";
 import ToggleButton from "../components/RatingButton";
@@ -22,13 +29,19 @@ const adjectives = [
   "Grumpy",
 ];
 
-const RatingScreen = (uId: number, eventId: number) => {
+const RatingScreen = ({ route }: { route: any }) => {
+  const { id, eventId } = route.params;
+  const uId = id;
   const contextValue = useContext(AuthContext);
   if (!contextValue) {
     throw new Error("No value");
   }
 
   const raterId = contextValue.userId;
+
+  console.log("uId", uId);
+  console.log("eventId", eventId);
+  console.log("raterId", raterId);
 
   const [selectedButtons, setSelectedButtons] = useState<string[]>([]);
 
@@ -42,49 +55,53 @@ const RatingScreen = (uId: number, eventId: number) => {
   };
 
   const handleSubmit = () => {
-    submitRating(raterId, uId, selectedButtons)
-  }
+    try {
+      submitRating(raterId, uId, selectedButtons);
+    } catch (error) {}
+  };
 
   return (
-    <SafeAreaView style={styles.SafeAreaView}>
-      <View style={styles.container}>
-        <Image source={userIcon} style={styles.userImage} />
-        <View style={styles.userDetailsContainer}>
-          <Text style={styles.userName}>Name</Text>
-          <Text style={styles.userDescription}>From xyz</Text>
+    // <SafeAreaView style={styles.SafeAreaView}>
+      <ScrollView style={styles.SafeAreaView}>
+        <View style={styles.container}>
+          <Image source={userIcon} style={styles.userImage} />
+          <View style={styles.userDetailsContainer}>
+            <Text style={styles.userName}>Name</Text>
+            <Text style={styles.userDescription}>From xyz</Text>
+          </View>
         </View>
-      </View>
-      <Text>{selectedButtons.toString()}</Text>
-      <Text style={styles.heading}>What do you think of this user?</Text>
-      <View style={styles.ButtonContainer}>
-        {adjectives.map((label) => (
-          <ToggleButton
-            key={label}
-            label={label}
-            isSelected={selectedButtons.includes(label)}
-            onPress={handleButtonPress}
-          />
-        ))}
-      </View>
-      <TouchableOpacity
-        style={[
-          styles.confirmButton,
-          selectedButtons.length > 0
-            ? styles.buttonActive
-            : styles.buttonInactive,
-        ]}
-        onPress={handleSubmit}
-      >
-        <Text style={styles.buttonText}>Confirm</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+        <Text>{selectedButtons.toString()}</Text>
+        <Text style={styles.heading}>What do you think of this user?</Text>
+        <View style={styles.ButtonContainer}>
+          {adjectives.map((label) => (
+            <ToggleButton
+              key={label}
+              label={label}
+              isSelected={selectedButtons.includes(label)}
+              onPress={handleButtonPress}
+            />
+          ))}
+        </View>
+        <TouchableOpacity
+          style={[
+            styles.confirmButton,
+            selectedButtons.length > 0
+              ? styles.buttonActive
+              : styles.buttonInactive,
+          ]}
+          onPress={handleSubmit}
+        >
+          <Text style={styles.buttonText}>Confirm</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    // </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   SafeAreaView: {
+    paddingTop: 20,
     marginHorizontal: 25,
-    marginTop: 30,
     height: "100%",
   },
   ButtonContainer: {
@@ -120,17 +137,17 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   buttonActive: {
-    backgroundColor: "#28B67E", 
+    backgroundColor: "#28B67E",
   },
   buttonInactive: {
     backgroundColor: "#1D4C4F",
   },
   buttonText: {},
   heading: {
-    fontWeight: '600',
+    fontWeight: "600",
     fontSize: 20,
-    marginBottom: 30
-  }
+    marginBottom: 30,
+  },
 });
 
 export default RatingScreen;

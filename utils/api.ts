@@ -23,7 +23,7 @@ export type User = {
   profilePicture: string;
   // total ratings from other users
   ratings: rating[];
-  // list of people this user has rated
+  // list of people this rated this user
   rated: number[];
 };
 
@@ -183,6 +183,8 @@ export const getUserData = async (userId: number): Promise<User | null> => {
       userId: userData.userId,
       username: userData.username,
       profilePicture: userData.profilePicture,
+      ratings: userData.ratings,
+      rated: userData.rated,
     };
 
     return user;
@@ -277,60 +279,75 @@ export const likeEvent = async (eventId: string, userId: number) => {
   }
 };
 
-export const submitRating = async (
-  raterUserId: number,
-  ratedUserId: number,
-  traits: string[]
-) => {
-  const usersCol = collection(db, "users");
-  const ratedUserRef = doc(usersCol, ratedUserId.toString());
-  const raterUserRef = doc(usersCol, raterUserId.toString());
+export const joinEvent = async (eventId: string, userId: number) => {
+  const eventRef = doc(db, "events", eventId);
 
   try {
-    const ratedUserDoc = await getDoc(ratedUserRef);
-    const raterUserDoc = await getDoc(raterUserRef);
+    const eventDoc = await getDoc(eventRef);
 
-    if (ratedUserDoc.exists() && raterUserDoc.exists()) {
-      const ratedUserData: User = ratedUserDoc.data() as User;
-      const raterUserData: User = raterUserDoc.data() as User;
+    if (eventDoc.exists()) {
+      const eventData = eventDoc.data() as Event;
 
-      // updates the ratings
-      const updatedRatings = ratedUserData.ratings.map((rating) => {
-        if (traits.includes(rating.trait)) {
-          return { ...rating, score: rating.score + 1 };
-        }
-        return rating;
-      });
-
-      traits.forEach((trait) => {
-        if (!updatedRatings.some((rating) => rating.trait === trait)) {
-          updatedRatings.push({ trait, score: 1 });
-        }
-      });
-
-      // updates at the db
-      await updateDoc(ratedUserRef, {
-        ratings: updatedRatings,
-      });
-
-      // checks if rater has rated user
-      if (!raterUserData.rated.includes(ratedUserId)) {
-        // updates the rated list
-        const updatedRated = [...raterUserData.rated, ratedUserId];
-
-        // update rater document
-        await updateDoc(raterUserRef, {
-          rated: updatedRated,
+      // Check if the user has already liked the event
+      if (!eventData.members.includes(userId)) {
+        // Update the likes array to include the new userId
+        await updateDoc(eventRef, {
+          members: arrayUnion(userId),
         });
-
-        console.log("Rating submitted successfully");
       } else {
-        console.log("User has already rated this person");
+        await updateDoc(eventRef, {
+          members: arrayRemove(userId),
+        });
+        console.log("Member removed");
       }
     } else {
-      console.log("User(s) not found");
+      console.log("Event not found");
     }
   } catch (error) {
-    console.error("Error submitting rating:", error);
+    console.error("Error joining event:", error);
+  }
+};
+
+export const submitRating = async (ratedUserId: number, raterUserId: number, traits: string[]) => {
+  const usersCol = collection(db, "users");
+  const q = query(usersCol, where("userId", "==", ratedUserId));
+  const querySnapshot = await getDocs(q);
+
+  console.log('rating', ratedUserId, raterUserId, traits);
+
+  if (!querySnapshot.empty) {
+    const ratedUserDoc = querySnapshot.docs[0];
+    const ratedUserData: User = ratedUserDoc.data() as User;
+
+    const updatedRatings = ratedUserData.ratings.map(rating => {
+      if (traits.includes(rating.trait)) {
+        return { ...rating, score: rating.score + 1 }; 
+      }
+      return rating;
+    });
+
+    traits.forEach(trait => {
+      if (!updatedRatings.some(rating => rating.trait === trait)) {
+        updatedRatings.push({ trait, score: 1 }); 
+      }
+    });
+
+    if (!ratedUserData.rated.includes(raterUserId)) {
+      const updatedRated = [...ratedUserData.rated, raterUserId];
+
+      await updateDoc(ratedUserDoc.ref, {
+        ratings: updatedRatings,
+        rated: updatedRated,
+      });
+      console.log("Rating submitted successfully");
+      throw Error ("Rating submitted successfully")
+    } else {
+      console.log("User has already rated this person");
+      throw Error ("User has already rated this person")
+
+    }
+  } else {
+    console.log("Rated user not found");
+    throw Error ("Rated user not found")
   }
 };

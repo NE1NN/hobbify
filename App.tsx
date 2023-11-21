@@ -20,7 +20,8 @@ export type RootStackParamList = {
   Navbar: undefined;
   Settings: undefined;
   EventDetails: { id: string };
-  CreateEvent: undefined
+  RatingScreen: { id: number; eventId: number };
+  CreateEvent: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -44,7 +45,7 @@ export default function App() {
             <>
               <Stack.Screen
                 name="Navbar"
-                component={RatingScreen}
+                component={Navbar}
                 options={{ headerShown: false }}
               />
             </>
@@ -65,7 +66,12 @@ export default function App() {
           <Stack.Screen
             name="EventDetails"
             component={EventDetails}
-            options={{ headerShown: false }}
+            // options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="RatingScreen"
+            component={RatingScreen}
+            // options={{ headerShown: false }}
           />
         </Stack.Navigator>
       </NavigationContainer>

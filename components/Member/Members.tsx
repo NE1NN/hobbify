@@ -16,6 +16,7 @@ export function Members({ eventId }: { eventId: number }) {
         console.log(snapshot);
 
         const eventData = snapshot.data() as Event;
+        console.log('eventdata', eventData)
         setEvent(eventData);
       } catch (error) {
         console.error("error:", error);
@@ -37,7 +38,7 @@ export function Members({ eventId }: { eventId: number }) {
         </Text>
       </View>
       {event.members.map((memberId) => (
-        <Member key={memberId} uId={memberId} /> // Render Member component for each member ID
+        <Member key={memberId} uId={memberId} eventId={eventId} /> // Render Member component for each member ID
       ))}
     </View>
   );
@@ -45,7 +46,6 @@ export function Members({ eventId }: { eventId: number }) {
 
 const styles = StyleSheet.create({
   Container: {
-    marginTop: 20,
     borderRadius: 25,
     backgroundColor: "#1D4C4F",
     width: "100%",
