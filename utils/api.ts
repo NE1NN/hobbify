@@ -32,6 +32,7 @@ export type Event = {
   isPublic: boolean;
   members: number[];
   likes: number[];
+  membersLimit: number;
 };
 
 export type createEventDetails = {
