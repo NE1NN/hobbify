@@ -44,7 +44,7 @@ export default function Navbar() {
     >
       <Tab.Screen name="Home" component={HomeScreen}/>
       <Tab.Screen name="Search" component={SearchScreen} />
-      <Tab.Screen name="Event" component={EventsTopBar} />
+      <Tab.Screen name="Event" component={EventsScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>

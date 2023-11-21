@@ -15,6 +15,10 @@ import UserEventCard from "../../../components/UserEventCard";
 export default function History() {
   const [events, setEvents] = useState<Event[]>([]);
 
+  const handleCreateEvent = () => {
+    // TODO
+  }
+
   useEffect(() => {
     const populateEvents = async () => {
       const events = await getEvents();
@@ -26,7 +30,7 @@ export default function History() {
   return (
     <SafeAreaView style={styles.SafeAreaView}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <TouchableOpacity style={styles.createEventButton}>
+        <TouchableOpacity style={styles.createEventButton} onPress={handleCreateEvent}>
           <Text style={styles.createEventText}>Create an Event</Text>
         </TouchableOpacity>
 

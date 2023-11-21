@@ -4,19 +4,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { EventsTopBar } from "../../components/EventsTopBar";
 
 export default function EventsScreen() {
-  return (
-    <SafeAreaView style={styles.SafeAreaView}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <EventsTopBar />
-      </ScrollView>
-    </SafeAreaView>
-  );
+  return <EventsTopBar />;
 }
 
 const styles = StyleSheet.create({
   SafeAreaView: {
     marginHorizontal: 25,
     marginTop: 30,
+    height: "100%",
     backgroundColor: "white",
   },
   sectionHeading: {
