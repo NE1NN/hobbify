@@ -8,13 +8,15 @@ import {
   Button,
   Image,
 } from "react-native";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import dp from "../assets/Profile/dp.jpg";
 import { Ionicons } from "@expo/vector-icons";
 
 import * as ImagePicker from "expo-image-picker";
 import ellipse from "../assets/Profile/ellipseGreen.png";
 import { ScrollView } from "react-native";
+import { updateProfPic } from "../utils/api";
+import AuthContext from "../AuthContext";
 
 export default function ProfileScreen() {
   const [img, setImg] = useState(""); // img needs to be saved somewhere
@@ -40,6 +42,14 @@ export default function ProfileScreen() {
     ["Singer🎤", 1],
   ];
 
+  const authContextValue = useContext(AuthContext)
+
+  if (!authContextValue) {
+    throw new Error('Auth context value empty')
+  }
+
+  const {userId} = authContextValue
+
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
@@ -48,7 +58,9 @@ export default function ProfileScreen() {
       cameraType: ImagePicker.CameraType.back,
     });
     if (!result.canceled) {
-      setImg(result.assets[0].uri);
+      const newProfPic = result.assets[0].uri
+      setImg(newProfPic);
+      await updateProfPic(newProfPic, userId)
     }
   };
 
