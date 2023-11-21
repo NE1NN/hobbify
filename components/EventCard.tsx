@@ -1,9 +1,12 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import React from 'react';
-import { FontAwesome } from '@expo/vector-icons';
-import { Timestamp } from 'firebase/firestore';
-import { timestampToString } from '../utils/helpers';
-import { getEvent } from '../utils/api';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import React from "react";
+import { FontAwesome } from "@expo/vector-icons";
+import { Timestamp } from "firebase/firestore";
+import { timestampToString } from "../utils/helpers";
+import { getEvent } from "../utils/api";
+import { useNavigation } from "@react-navigation/native";
+import type { RootStackParamList } from "../App";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 type EventCardProps = {
   name: string;
@@ -20,9 +23,12 @@ export default function EventCard({
   time,
   eventId,
 }: EventCardProps) {
+  const navigation =
+    useNavigation<
+      NativeStackNavigationProp<RootStackParamList, "EventDetails">
+    >();
   const handlePress = async () => {
-    const event = await getEvent(eventId);
-    console.log(event);
+    navigation.navigate("EventDetails", { id: eventId });
   };
 
   return (
@@ -35,8 +41,8 @@ export default function EventCard({
           <Text>{location}</Text>
         </View>
         <View>
-          <Text>{timestampToString(time, 'date')}</Text>
-          <Text>at {timestampToString(time, 'time')}</Text>
+          <Text>{timestampToString(time, "date")}</Text>
+          <Text>at {timestampToString(time, "time")}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -45,26 +51,26 @@ export default function EventCard({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   detailsContainer: {
-    justifyContent: 'center',
+    justifyContent: "center",
     gap: 20,
     marginLeft: 15,
   },
   eventName: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 20,
   },
   image: {
     width: 150,
     height: 200,
-    backgroundColor: 'black',
+    backgroundColor: "black",
     borderRadius: 20,
   },
   locationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 5,
   },
 });

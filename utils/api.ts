@@ -17,8 +17,8 @@ export type Event = {
   location: string;
   creatorId: number;
   time: Timestamp;
-  description: string;
-  date: Date;
+  desc: string;
+  members: number[];
 };
 
 export const getEvents = async () => {
