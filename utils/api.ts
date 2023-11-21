@@ -12,12 +12,17 @@ type User = {
 
 export type Event = {
   eventId: string;
+  description: string;
   thumbnail: string;
   name: string;
+  nameLowered: string;
   location: string;
   creatorId: number;
   time: string;
   date: string;
+  isPublic: boolean;
+  members: number[];
+  likes: number[];
 };
 
 export type createEventProps = {
