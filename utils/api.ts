@@ -1,5 +1,5 @@
-import * as FileSystem from "expo-file-system";
-const filePath = FileSystem.documentDirectory + "data.json";
+import * as FileSystem from 'expo-file-system';
+const filePath = FileSystem.documentDirectory + 'data.json';
 import {
   collection,
   getDocs,
@@ -9,10 +9,11 @@ import {
   getDoc,
   setDoc,
   addDoc,
-} from "firebase/firestore";
-import { db } from "../firebaseConfig";
-import { Timestamp } from "firebase/firestore";
-import { generateSimpleToken, generateUserId } from "./helpers";
+  updateDoc,
+} from 'firebase/firestore';
+import { db } from '../firebaseConfig';
+import { Timestamp } from 'firebase/firestore';
+import { generateSimpleToken, generateUserId } from './helpers';
 
 type User = {
   userId: number;
@@ -46,7 +47,7 @@ export type createEventDetails = {
 };
 
 export const getEvents = async () => {
-  const eventsCol = collection(db, "events");
+  const eventsCol = collection(db, 'events');
   const eventsDocs = await getDocs(eventsCol);
 
   const events: Event[] = eventsDocs.docs.map(
@@ -60,18 +61,18 @@ export const getEvents = async () => {
 };
 
 export const searchEvent = async (searchValue: string) => {
-  const eventsCol = collection(db, "events");
+  const eventsCol = collection(db, 'events');
   const eventsQuery = query(
     eventsCol,
-    where("nameLowered", ">=", searchValue.toLowerCase()),
-    where("nameLowered", "<=", searchValue.toLowerCase() + "\uf8ff")
+    where('nameLowered', '>=', searchValue.toLowerCase()),
+    where('nameLowered', '<=', searchValue.toLowerCase() + '\uf8ff')
   );
   const eventDocs = await getDocs(eventsQuery);
   return eventDocs;
 };
 
 export const getEvent = async (eventId: string) => {
-  const eventsCol = collection(db, "events");
+  const eventsCol = collection(db, 'events');
   const eventRef = doc(eventsCol, eventId);
   const eventDoc = await getDoc(eventRef);
   return eventDoc;
@@ -82,14 +83,14 @@ export const registerUser = async (
   email: string,
   password: string
 ) => {
-  const userCol = collection(db, "users");
+  const userCol = collection(db, 'users');
 
-  const usernameQuery = query(userCol, where("username", "==", username));
+  const usernameQuery = query(userCol, where('username', '==', username));
   const querySnapshot = await getDocs(usernameQuery);
 
   if (!querySnapshot.empty) {
     // Username already exists
-    throw new Error("Username already taken");
+    throw new Error('Username already taken');
   }
 
   let user = {
@@ -109,11 +110,11 @@ export const registerUser = async (
 };
 
 export const loginUser = async (username: string, password: string) => {
-  const usersCol = collection(db, "users");
+  const usersCol = collection(db, 'users');
   const q = query(
     usersCol,
-    where("username", "==", username),
-    where("password", "==", password)
+    where('username', '==', username),
+    where('password', '==', password)
   );
   const querySnapshot = await getDocs(q);
   try {
@@ -131,13 +132,13 @@ export const loginUser = async (username: string, password: string) => {
       return null;
     }
   } catch (e) {
-    console.log("meki", e);
+    console.log('meki', e);
   }
 };
 
 export const getUserDetail = async (userId: number) => {
-  const usersCol = collection(db, "users");
-  const q = query(usersCol, where("userId", "==", userId));
+  const usersCol = collection(db, 'users');
+  const q = query(usersCol, where('userId', '==', userId));
   const querySnapshot = await getDocs(q);
 
   if (!querySnapshot.empty) {
@@ -164,7 +165,7 @@ export const createEvent = async (props: createEventDetails) => {
     isPublic,
     membersLimit,
   } = props;
-  const eventsCol = collection(db, "events");
+  const eventsCol = collection(db, 'events');
 
   // Extracting date parts
   let year = date.getFullYear();
@@ -206,4 +207,25 @@ export const createEvent = async (props: createEventDetails) => {
 
   await addDoc(eventsCol, event);
   return {};
+};
+
+export const updateProfPic = async (newProfPic: string, userId: number) => {
+  const usersCol = collection(db, 'users');
+  const userQuery = query(usersCol, where('userId', '==', userId));
+
+  try {
+    const querySnapshot = await getDocs(userQuery);
+    if (querySnapshot.empty) {
+      console.log('No user found with the given userId');
+      return;
+    }
+
+    const userDoc = querySnapshot.docs[0];
+    const userDocRef = userDoc.ref;
+
+    await updateDoc(userDocRef, { profPic: newProfPic });
+    console.log('Profile picture updated successfully');
+  } catch (err) {
+    console.error('Failed updating profile picture', err);
+  }
 };
