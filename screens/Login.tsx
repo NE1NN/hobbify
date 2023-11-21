@@ -4,6 +4,7 @@ import { loginUser } from '../utils/api';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
 import AuthContext from '../AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -25,6 +26,7 @@ const Login = ({ navigation }: Props) => {
     if (res) {
       const { token, userId } = res
       if (userId !== undefined) {
+        await AsyncStorage.setItem("user", JSON.stringify(userId));
         setLoggedIn(userId)
       } else {
         console.log('meki')
@@ -34,7 +36,7 @@ const Login = ({ navigation }: Props) => {
 
   const handleForgetPassword = () => {
     // FUTURE IMPLEMENTATION
-    console.log('yang baca kontol')                              
+    console.log('Future Implementation')                              
   }
 
   return (

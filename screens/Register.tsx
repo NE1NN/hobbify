@@ -4,6 +4,7 @@ import { registerUser } from '../utils/api';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
 import AuthContext from '../AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
 
@@ -26,6 +27,7 @@ const Register = ({ navigation }: Props) => {
   const handleRegister = async () => {
     if (password === confirmPassword) {
       const { token, userId } = await registerUser(username, email, password)
+      await AsyncStorage.setItem("user", JSON.stringify(userId));
       setLoggedIn(userId)
     }
     else setIsPasswordSame(false)
