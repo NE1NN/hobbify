@@ -1,16 +1,16 @@
-import { Settings, StyleSheet } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "./screens/HomeScreen";
-import Navbar from "./components/Navbar";
-import SettingsScreen from "./screens/SettingsScreen";
-import ProfileScreen from "./screens/ProfileScreen";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Register from "./screens/Register";
-import Login from "./screens/Login";
-import { useState } from "react";
-import AuthContext from "./AuthContext";
-import { EventDetails } from "./screens/Events/EventDetails";
+import { Settings, StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeScreen from './screens/HomeScreen';
+import Navbar from './components/Navbar';
+import SettingsScreen from './screens/SettingsScreen';
+import ProfileScreen from './screens/ProfileScreen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Register from './screens/Register';
+import Login from './screens/Login';
+import { useState } from 'react';
+import AuthContext from './AuthContext';
+import { EventDetails } from './screens/Events/EventDetails';
 
 export type RootStackParamList = {
   Register: undefined;
@@ -19,7 +19,7 @@ export type RootStackParamList = {
   Navbar: undefined;
   Settings: undefined;
   EventDetails: { id: string };
-  CreateEvent: undefined
+  CreateEvent: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -46,6 +46,7 @@ export default function App() {
                 component={Navbar}
                 options={{ headerShown: false }}
               />
+              <Stack.Screen name="EventDetails" component={EventDetails} />
             </>
           ) : (
             <>
@@ -61,11 +62,6 @@ export default function App() {
               />
             </>
           )}
-          <Stack.Screen
-            name="EventDetails"
-            component={EventDetails}
-            options={{ headerShown: false }}
-          />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthContext.Provider>
@@ -75,9 +71,9 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
