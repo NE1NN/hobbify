@@ -12,10 +12,10 @@ import {
   updateDoc,
   arrayUnion,
   arrayRemove,
-} from "firebase/firestore";
-import { db } from "../firebaseConfig";
-import { Timestamp } from "firebase/firestore";
-import { generateSimpleToken, generateUserId } from "./helpers";
+} from 'firebase/firestore';
+import { db } from '../firebaseConfig';
+import { Timestamp } from 'firebase/firestore';
+import { generateSimpleToken, generateUserId } from './helpers';
 import { async } from '@firebase/util';
 
 export type User = {
@@ -65,14 +65,14 @@ export const getEvents = async () => {
   return events;
 };
 
-export const getUpcomingEvents = async() => {
-  const today = new Date()
+export const getUpcomingEvents = async () => {
+  const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const todayTimestamp = Timestamp.fromDate(today)
+  const todayTimestamp = Timestamp.fromDate(today);
 
   const eventsCol = collection(db, 'events');
-  const eventsQuery = query(eventsCol, where('time', '>', todayTimestamp))
+  const eventsQuery = query(eventsCol, where('time', '>', todayTimestamp));
   const eventsDocs = await getDocs(eventsQuery);
 
   const events: Event[] = eventsDocs.docs.map(
@@ -83,10 +83,39 @@ export const getUpcomingEvents = async() => {
       } as Event)
   );
   return events;
-}
-export const getMyEvents = async(userId: number) => {
+};
+
+export const getInterestedEvents = async (userId: number) => {
+  const usersCol = collection(db, 'users');
+  const q = query(usersCol, where('userId', '==', userId));
+  const querySnapshot = await getDocs(q);
+
+  if (!querySnapshot.empty) {
+    const userDoc = querySnapshot.docs[0];
+    const userData = userDoc.data();
+
+    const interestedEvents: string[] = userData.interestedEvents;
+    let eventData: Event[] = [];
+    const eventPromises = interestedEvents.map(async (eventId) => {
+      const eventDoc = doc(db, 'events', eventId);
+      const eventSnapshot = await getDoc(eventDoc);
+      if (eventSnapshot.exists()) {
+        eventData.push({
+          eventId: eventSnapshot.id,
+          ...eventSnapshot.data(),
+        } as Event);
+      }
+    });
+    await Promise.all(eventPromises)
+    return eventData;
+  } else {
+    return null;
+  }
+};
+
+export const getMyEvents = async (userId: number) => {
   const eventsCol = collection(db, 'events');
-  const eventsQuery = query(eventsCol, where('creatorId', '==', userId))
+  const eventsQuery = query(eventsCol, where('creatorId', '==', userId));
   const eventsDocs = await getDocs(eventsQuery);
 
   const events: Event[] = eventsDocs.docs.map(
@@ -97,7 +126,7 @@ export const getMyEvents = async(userId: number) => {
       } as Event)
   );
   return events;
-}
+};
 
 export const searchEvent = async (searchValue: string) => {
   const eventsCol = collection(db, 'events');
@@ -194,8 +223,8 @@ export const getUserDetail = async (userId: number) => {
 };
 
 export const getUserData = async (userId: number): Promise<User | null> => {
-  const usersCol = collection(db, "users");
-  const userQuery = query(usersCol, where("userId", "==", userId));
+  const usersCol = collection(db, 'users');
+  const userQuery = query(usersCol, where('userId', '==', userId));
   const querySnapshot = await getDocs(userQuery);
 
   if (!querySnapshot.empty) {
@@ -215,7 +244,6 @@ export const getUserData = async (userId: number): Promise<User | null> => {
     return null;
   }
 };
-
 
 export const createEvent = async (props: createEventDetails) => {
   const {
@@ -274,7 +302,7 @@ export const createEvent = async (props: createEventDetails) => {
 };
 
 export const likeEvent = async (eventId: string, userId: number) => {
-  const eventRef = doc(db, "events", eventId);
+  const eventRef = doc(db, 'events', eventId);
 
   try {
     const eventDoc = await getDoc(eventRef);
@@ -286,19 +314,19 @@ export const likeEvent = async (eventId: string, userId: number) => {
       if (!eventData.likes.includes(userId)) {
         // Update the likes array to include the new userId
         await updateDoc(eventRef, {
-          likes: arrayUnion(userId)
+          likes: arrayUnion(userId),
         });
       } else {
         await updateDoc(eventRef, {
-          likes: arrayRemove(userId)
+          likes: arrayRemove(userId),
         });
-        console.log("Like removed");
+        console.log('Like removed');
       }
     } else {
-      console.log("Event not found");
+      console.log('Event not found');
     }
   } catch (error) {
-    console.error("Error liking event:", error);
+    console.error('Error liking event:', error);
   }
 };
 

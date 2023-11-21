@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Button,
   SafeAreaView,
@@ -9,21 +9,32 @@ import {
   View,
 } from "react-native";
 import EventCard from "../../../components/EventCard";
-import { Event, getEvents, getUpcomingEvents } from "../../../utils/api";
+import { Event, getEvents, getInterestedEvents, getUpcomingEvents } from "../../../utils/api";
 import UserEventCard from "../../../components/UserEventCard";
+import AuthContext from "../../../AuthContext";
 
-export default function Ongoing() {
+export default function Interested() {
   const [events, setEvents] = useState<Event[]>([]);
 
   const handleCreateEvent = () => {
     // TODO
   }
 
+  const authContextValue = useContext(AuthContext);
+
+  if (!authContextValue) {
+    throw new Error('Auth context value is empty');
+  }
+
+  const { userId } = authContextValue;
+
   useEffect(() => {
     const populateEvents = async () => {
-      const events = await getUpcomingEvents();
-      setEvents(events);
-      console.log(events)
+      const events = await getInterestedEvents(userId);
+      if (events) {
+        setEvents(events);
+        console.log(events)
+      }
     };
     populateEvents();
   }, []);
@@ -42,10 +53,11 @@ export default function Ongoing() {
           <UserEventCard />
         </View>
 
-        <Text style={styles.sectionHeading}>Upcoming Events</Text>
+        <Text style={styles.sectionHeading}>Interested Events</Text>
         <View style={styles.eventsContainer}>
-          {events.map((event, idx) => (
-            <EventCard
+          {events.map((event, idx) => {
+            console.log(event)
+            return <EventCard
               key={idx}
               name={event.name}
               location={event.location}
@@ -53,7 +65,7 @@ export default function Ongoing() {
               time={event.time}
               eventId={event.eventId}
             />
-          ))}
+})}
         </View>
       </ScrollView>
     </SafeAreaView>
