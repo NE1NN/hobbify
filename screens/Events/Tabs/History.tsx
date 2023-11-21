@@ -8,9 +8,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import EventCard from "../../components/EventCard";
-import { Event, getEvents } from "../../utils/api";
-import UserEventCard from "../../components/UserEventCard";
+import EventCard from "../../../components/EventCard";
+import { Event, getEvents } from "../../../utils/api";
+import UserEventCard from "../../../components/UserEventCard";
 
 export default function History() {
   const [events, setEvents] = useState<Event[]>([]);

@@ -1,7 +1,7 @@
 import React from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { EventsTopBar } from "../components/EventsTopBar";
+import { EventsTopBar } from "../../components/EventsTopBar";
 
 export default function EventsScreen() {
   return (

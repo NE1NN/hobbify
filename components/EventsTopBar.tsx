@@ -1,5 +1,5 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import History from "../screens/Events/History";
+import History from "../screens/Events/Tabs/History";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React from "react";
 import { ScrollView, StyleSheet } from "react-native";

@@ -10,7 +10,7 @@ import Register from "./screens/Register";
 import Login from "./screens/Login";
 import { useState } from "react";
 import AuthContext from "./AuthContext";
-import { EventDetails } from "./screens/EventDetails";
+import { EventDetails } from "./screens/Events/EventDetails";
 
 export type RootStackParamList = {
   Register: undefined;

@@ -7,7 +7,7 @@ import SettingsScreen from "../screens/SettingsScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 
 import { Settings } from "react-native";
-import EventsScreen from '../screens/EventsScreen';
+import EventsScreen from '../screens/Events/EventsScreen';
 import { EventsTopBar } from "./EventsTopBar";
 
 const Tab = createBottomTabNavigator();

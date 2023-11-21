@@ -7,9 +7,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { User, getUserData, getUserDetail } from "../utils/api";
+import { User, getUserData, getUserDetail } from "../../utils/api";
 import React from "react";
-import defaultProfilePicture from "../assets/icon.png";
+import defaultProfilePicture from "../../assets/icon.png";
 
 export function Member({ uId }: { uId: number }) {
   const [member, setMember] = useState<User | null>(null);

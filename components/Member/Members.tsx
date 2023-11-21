@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Event, getEvent } from "../utils/api";
+import { Event, getEvent } from "../../utils/api";
 import { Member } from "./Member";
 
 export function Members({ eventId }: { eventId: number }) {

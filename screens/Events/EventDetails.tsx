@@ -9,11 +9,11 @@ import {
   View,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { Event, getEvent, likeEvent } from "../utils/api";
+import { Event, getEvent, likeEvent } from "../../utils/api";
 import { FontAwesome } from "@expo/vector-icons";
-import { timestampToString } from "../utils/helpers";
-import { Members } from "./Members";
-import AuthContext from "../AuthContext";
+import { timestampToString } from "../../utils/helpers";
+import { Members } from "../../components/Member/Members";
+import AuthContext from "../../AuthContext";
 
 export function EventDetails({ route }: { route: any }) {
   const id = route.params.id;
