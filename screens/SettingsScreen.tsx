@@ -7,16 +7,26 @@ import {
   ImageBackground,
   Button,
 } from "react-native";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import ellipse from "../assets/Settings/ellipse.png";
 import darkEllipse from "../assets/Settings/dark_ellipse.png";
 
 import { Feather } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import AuthContext from "../AuthContext";
 
 export default function SettingsScreen() {
   const [mode, setMode] = useState("light");
   const textColor = mode === "dark" ? "#fff" : "#000";
+
+  const contextValue = useContext(AuthContext);
+
+  if (!contextValue) {
+    throw new Error("No context value");
+  }
+
+  const { setLoggedOut } = contextValue;
 
   const dynamicStyles = StyleSheet.create({
     container: {
@@ -60,6 +70,11 @@ export default function SettingsScreen() {
       borderColor: textColor,
     },
   });
+
+  const handleLogOut = async () => {
+    await AsyncStorage.removeItem("user");
+    setLoggedOut()
+  }
 
   return (
     <ImageBackground
@@ -243,7 +258,7 @@ export default function SettingsScreen() {
       <View style={{ height: 20 }}></View>
 
       {/* Log Out */}
-      <Button title="LOG OUT" onPress={() => console.log("Log out")}></Button>
+      <Button title="LOG OUT" onPress={handleLogOut}></Button>
     </ImageBackground>
   );
 }
