@@ -154,7 +154,8 @@ export const createEvent = async (props: createEventDetails) => {
     date,
     time,
     isPublic,
-    membersLimit: members
+    membersLimit: members,
+    likes: []
   };
 
   await addDoc(eventsCol, event);
