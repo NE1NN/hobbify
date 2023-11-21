@@ -35,7 +35,7 @@ const CreateEvent = ({ navigation }: Props) => {
 
   const contextValue = useContext(AuthContext);
   // const { userId } = contextValue
-  const creatorId = 1;
+  const creatorId = contextValue ? contextValue.userId : 0;
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -76,7 +76,6 @@ const CreateEvent = ({ navigation }: Props) => {
       name,
       desc,
       location,
-      members,
       date,
       time,
       isPublic,

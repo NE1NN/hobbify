@@ -12,11 +12,15 @@ type User = {
 
 export type Event = {
   eventId: string;
+  creatorId: number;
   thumbnail: string;
   name: string;
+  desc:string;
   location: string;
-  creatorId: number;
   time: Timestamp;
+  isPublic: boolean
+  members: number[];
+  likes: number[];
 };
 
 export type createEventDetails = {
@@ -25,7 +29,6 @@ export type createEventDetails = {
   name: string;
   desc: string;
   location: string;
-  members: string;
   date: Date;
   time: Date;
   isPublic: boolean;
@@ -140,21 +143,37 @@ export const getUserDetail = async (userId: number) => {
 }
 
 export const createEvent = async (props: createEventDetails) => {
-  const { creatorId, thumbnail, name, desc, location, members, date, time, isPublic } = props
+  const { creatorId, thumbnail, name, desc, location, date, time, isPublic } = props
   const eventsCol = collection(db, "events");
 
+
+  // Extracting date parts
+  let year = date.getFullYear();
+  let month = date.getMonth();
+  let day = date.getDate();
+
+  // Extracting time parts
+  let hours = time.getHours();
+  let minutes = time.getMinutes();
+  let seconds = time.getSeconds();
+  let milliseconds = time.getMilliseconds();
+
+  // Creating a new Date object with combined date and time
+  let combinedDateTime = new Date(year, month, day, hours, minutes, seconds, milliseconds);
+
+  const timestamp = Timestamp.fromDate(combinedDateTime)
+
   let event = {
-    creatorId: 1,
+    creatorId,
     location,
     members: [creatorId],
     name,
     description: desc,
     nameLowered: name.toLowerCase(),
     thumbnail,
-    date,
-    time,
+    time: timestamp,
     isPublic,
-    membersLimit: members,
+    membersLimit: 0,
     likes: []
   };
 
