@@ -6,7 +6,12 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 
-export default function UserEventCard({ uId, eventId }) {
+type Props = {
+  uId: number;
+  eventId: number;
+};
+
+export default function UserEventCard({ uId, eventId }: Props) {
   const [member, setMember] = useState<User | null>(null);
   const [event, setEvent] = useState<Event | null>(null);
 
