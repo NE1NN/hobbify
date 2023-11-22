@@ -8,13 +8,28 @@ import {
   Button,
   Image,
 } from "react-native";
-import { useState } from "react";
-import dp from "../assets/Profile/dp.jpg";
+import { useContext, useState } from "react";
+import defaultDp from "../assets/Profile/dp.jpg";
 import { Ionicons } from "@expo/vector-icons";
 
 import * as ImagePicker from "expo-image-picker";
 import ellipse from "../assets/Profile/ellipseGreen.png";
 import { ScrollView } from "react-native";
+import { updateProfPic } from "../utils/api";
+import AuthContext from "../AuthContext";
+
+type PillProps = {
+  text: string | number
+}
+
+type PillAndCountProps = PillProps & {
+  count: string | number
+}
+
+type DisplayPicProps = {
+  dp: any
+  uri?: string
+}
 
 export default function ProfileScreen() {
   const [img, setImg] = useState(""); // img needs to be saved somewhere
@@ -40,6 +55,14 @@ export default function ProfileScreen() {
     ["Singer🎤", 1],
   ];
 
+  const authContextValue = useContext(AuthContext)
+
+  if (!authContextValue) {
+    throw new Error('Auth context value empty')
+  }
+
+  const {userId} = authContextValue
+
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
@@ -48,11 +71,13 @@ export default function ProfileScreen() {
       cameraType: ImagePicker.CameraType.back,
     });
     if (!result.canceled) {
-      setImg(result.assets[0].uri);
+      const newProfPic = result.assets[0].uri
+      setImg(newProfPic);
+      await updateProfPic(newProfPic, userId)
     }
   };
 
-  const Pill = ({ text }) => {
+  const Pill = ({ text }: PillProps) => {
     return (
       <View style={{ paddingBottom: 10, paddingRight: 7 }}>
         <View
@@ -70,7 +95,7 @@ export default function ProfileScreen() {
     );
   };
 
-  const PillAndCount = ({ text, count }) => {
+  const PillAndCount = ({ text, count }: PillAndCountProps) => {
     return (
       <View style={{ paddingBottom: 10, paddingRight: 10 }}>
         <View
@@ -105,7 +130,7 @@ export default function ProfileScreen() {
     );
   };
 
-  const DisplayPic = ({ dp, uri }) => {
+  const DisplayPic = ({ dp, uri }: DisplayPicProps) => {
     return (
       <View>
         <TouchableOpacity onPress={pickImage}>
@@ -127,7 +152,7 @@ export default function ProfileScreen() {
 
         {/* Profile container */}
         <View style={styles.profileCont}>
-          <DisplayPic dp={dp} uri={img} />
+          <DisplayPic dp={defaultDp} uri={img} />
           <Text style={styles.h2}>John Doe</Text>
           <Text style={styles.h3}>
             <Ionicons name="location" size={24} color="black" /> Waterloo

@@ -6,12 +6,13 @@ import Navbar from "./components/Navbar";
 import SettingsScreen from "./screens/SettingsScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import EventDetails from "./screens/Events/EventDetails";
+import RatingScreen from "./screens/RatingScreen";
 import Register from "./screens/Register";
 import Login from "./screens/Login";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AuthContext from "./AuthContext";
-import { EventDetails } from "./screens/Events/EventDetails";
-import RatingScreen from "./screens/RatingScreen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type RootStackParamList = {
   Register: undefined;
@@ -22,12 +23,23 @@ export type RootStackParamList = {
   EventDetails: { id: string };
   RatingScreen: { id: number; eventId: number };
   CreateEvent: undefined;
+  History: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 // const Tabs = createBottomTabNavigator();
 
 export default function App() {
+  useEffect(() => {
+    const getUser = async () => {
+      const value = await AsyncStorage.getItem("user");
+      if (value !== null) {
+        setLoggedin(Number(value));
+      }
+    };
+    getUser();
+  }, []);
+
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [userId, setUserId] = useState(0);
 
@@ -36,9 +48,20 @@ export default function App() {
     setIsSignedIn(true);
   };
 
+  const setLoggedOut = () => {
+    setUserId(0);
+    setIsSignedIn(false);
+  };
+
   return (
     // <View>
-    <AuthContext.Provider value={{ userId: userId, setLoggedIn: setLoggedin }}>
+    <AuthContext.Provider
+      value={{
+        userId: userId,
+        setLoggedIn: setLoggedin,
+        setLoggedOut: setLoggedOut,
+      }}
+    >
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Register">
           {isSignedIn ? (
@@ -48,6 +71,8 @@ export default function App() {
                 component={Navbar}
                 options={{ headerShown: false }}
               />
+              <Stack.Screen name="EventDetails" component={EventDetails} />
+              <Stack.Screen name="RatingScreen" component={RatingScreen} />
             </>
           ) : (
             <>
@@ -63,16 +88,6 @@ export default function App() {
               />
             </>
           )}
-          <Stack.Screen
-            name="EventDetails"
-            component={EventDetails}
-            // options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="RatingScreen"
-            component={RatingScreen}
-            // options={{ headerShown: false }}
-          />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthContext.Provider>
@@ -87,57 +102,3 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
-
-// import Ionicons from "@expo/vector-icons/Ionicons";
-// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-// import { createNativeStackNavigator } from "@react-navigation/native-stack";
-// import { NavigationContainer } from "@react-navigation/native";
-// import HomeScreen from './screens/HomeScreen';
-
-// const Tabs = createBottomTabNavigator();
-// const RootStack = createNativeStackNavigator();
-
-// export default function App() {
-//   const BottomTabs = () => (
-//     <Tabs.Navigator screenOptions={{ headerShown: false }}>
-//       <Tabs.Screen
-//         name="Notes"
-//         component={HomeScreen}
-//         options={{
-//           tabBarIcon: ({ size }) => (
-//             <Ionicons name="md-document-text" size={size} />
-//           ),
-//         }}
-//       />
-//       <Tabs.Screen
-//         name="Settings"
-//         component={HomeScreen}
-//         options={{
-//           tabBarIcon: ({ size }) => <Ionicons name="md-settings" size={size} />,
-//         }}
-//       />
-//     </Tabs.Navigator>
-//   );
-
-//   return (
-//     <NavigationContainer>
-//       <RootStack.Navigator>
-//         <RootStack.Screen
-//           name="Tabs"
-//           component={BottomTabs}
-//           options={{ headerShown: false }}
-//         />
-//         <RootStack.Screen
-//           name="Detail"
-//           component={HomeScreen}
-//           options={{ headerBackTitle: "Back" }}
-//         />
-//         <RootStack.Screen
-//           name="Create"
-//           component={HomeScreen}
-//           options={{ presentation: "modal" }}
-//         />
-//       </RootStack.Navigator>
-//     </NavigationContainer>
-//   );
-// }

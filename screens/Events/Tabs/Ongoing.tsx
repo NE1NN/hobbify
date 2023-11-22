@@ -9,25 +9,21 @@ import {
   View,
 } from "react-native";
 import EventCard from "../../../components/EventCard";
-import { Event, getEvents } from "../../../utils/api";
+import { Event, getEvents, getUpcomingEvents } from "../../../utils/api";
 import UserEventCard from "../../../components/UserEventCard";
-import { RootStackParamList } from "../../../App";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-type Props = NativeStackScreenProps<RootStackParamList, "History">;
-
-export default function History({ navigation }: Props) {
+export default function Ongoing() {
   const [events, setEvents] = useState<Event[]>([]);
 
   const handleCreateEvent = () => {
     // TODO
-    navigation.navigate('CreateEvent')
-  };
+  }
 
   useEffect(() => {
     const populateEvents = async () => {
-      const events = await getEvents();
+      const events = await getUpcomingEvents();
       setEvents(events);
+      console.log(events)
     };
     populateEvents();
   }, []);
@@ -35,10 +31,7 @@ export default function History({ navigation }: Props) {
   return (
     <SafeAreaView style={styles.SafeAreaView}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <TouchableOpacity
-          style={styles.createEventButton}
-          onPress={handleCreateEvent}
-        >
+        <TouchableOpacity style={styles.createEventButton} onPress={handleCreateEvent}>
           <Text style={styles.createEventText}>Create an Event</Text>
         </TouchableOpacity>
 
@@ -49,7 +42,7 @@ export default function History({ navigation }: Props) {
           <UserEventCard />
         </View>
 
-        <Text style={styles.sectionHeading}>Past Events</Text>
+        <Text style={styles.sectionHeading}>Upcoming Events</Text>
         <View style={styles.eventsContainer}>
           {events.map((event, idx) => (
             <EventCard

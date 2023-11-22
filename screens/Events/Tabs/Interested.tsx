@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Button,
   SafeAreaView,
@@ -9,25 +9,32 @@ import {
   View,
 } from "react-native";
 import EventCard from "../../../components/EventCard";
-import { Event, getEvents } from "../../../utils/api";
+import { Event, getEvents, getInterestedEvents, getUpcomingEvents } from "../../../utils/api";
 import UserEventCard from "../../../components/UserEventCard";
-import { RootStackParamList } from "../../../App";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import AuthContext from "../../../AuthContext";
 
-type Props = NativeStackScreenProps<RootStackParamList, "History">;
-
-export default function History({ navigation }: Props) {
+export default function Interested() {
   const [events, setEvents] = useState<Event[]>([]);
 
   const handleCreateEvent = () => {
     // TODO
-    navigation.navigate('CreateEvent')
-  };
+  }
+
+  const authContextValue = useContext(AuthContext);
+
+  if (!authContextValue) {
+    throw new Error('Auth context value is empty');
+  }
+
+  const { userId } = authContextValue;
 
   useEffect(() => {
     const populateEvents = async () => {
-      const events = await getEvents();
-      setEvents(events);
+      const events = await getInterestedEvents(userId);
+      if (events) {
+        setEvents(events);
+        console.log(events)
+      }
     };
     populateEvents();
   }, []);
@@ -35,10 +42,7 @@ export default function History({ navigation }: Props) {
   return (
     <SafeAreaView style={styles.SafeAreaView}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <TouchableOpacity
-          style={styles.createEventButton}
-          onPress={handleCreateEvent}
-        >
+        <TouchableOpacity style={styles.createEventButton} onPress={handleCreateEvent}>
           <Text style={styles.createEventText}>Create an Event</Text>
         </TouchableOpacity>
 
@@ -49,10 +53,11 @@ export default function History({ navigation }: Props) {
           <UserEventCard />
         </View>
 
-        <Text style={styles.sectionHeading}>Past Events</Text>
+        <Text style={styles.sectionHeading}>Interested Events</Text>
         <View style={styles.eventsContainer}>
-          {events.map((event, idx) => (
-            <EventCard
+          {events.map((event, idx) => {
+            console.log(event)
+            return <EventCard
               key={idx}
               name={event.name}
               location={event.location}
@@ -60,7 +65,7 @@ export default function History({ navigation }: Props) {
               time={event.time}
               eventId={event.eventId}
             />
-          ))}
+})}
         </View>
       </ScrollView>
     </SafeAreaView>

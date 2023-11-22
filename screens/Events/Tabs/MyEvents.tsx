@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Button,
   SafeAreaView,
@@ -7,26 +7,30 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import EventCard from "../../../components/EventCard";
-import { Event, getEvents } from "../../../utils/api";
-import UserEventCard from "../../../components/UserEventCard";
-import { RootStackParamList } from "../../../App";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+} from 'react-native';
+import EventCard from '../../../components/EventCard';
+import { Event, getEvents, getMyEvents } from '../../../utils/api';
+import UserEventCard from '../../../components/UserEventCard';
+import AuthContext from '../../../AuthContext';
 
-type Props = NativeStackScreenProps<RootStackParamList, "History">;
-
-export default function History({ navigation }: Props) {
+export default function MyEvents() {
   const [events, setEvents] = useState<Event[]>([]);
 
   const handleCreateEvent = () => {
     // TODO
-    navigation.navigate('CreateEvent')
   };
+
+  const authContextValue = useContext(AuthContext);
+
+  if (!authContextValue) {
+    throw new Error('Auth context value is empty');
+  }
+
+  const { userId } = authContextValue;
 
   useEffect(() => {
     const populateEvents = async () => {
-      const events = await getEvents();
+      const events = await getMyEvents(userId);
       setEvents(events);
     };
     populateEvents();
@@ -49,7 +53,7 @@ export default function History({ navigation }: Props) {
           <UserEventCard />
         </View>
 
-        <Text style={styles.sectionHeading}>Past Events</Text>
+        <Text style={styles.sectionHeading}>My Events</Text>
         <View style={styles.eventsContainer}>
           {events.map((event, idx) => (
             <EventCard
@@ -73,7 +77,7 @@ const styles = StyleSheet.create({
   },
   sectionHeading: {
     fontSize: 28,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 20,
   },
   eventsContainer: {
@@ -81,16 +85,16 @@ const styles = StyleSheet.create({
   },
   createEventButton: {
     marginVertical: 24,
-    backgroundColor: "#28B67E",
+    backgroundColor: '#28B67E',
     borderRadius: 15,
     height: 40,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   createEventText: {
     fontSize: 20,
-    fontWeight: "700",
-    color: "white",
-    textAlign: "center",
+    fontWeight: '700',
+    color: 'white',
+    textAlign: 'center',
   },
 });
