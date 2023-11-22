@@ -8,8 +8,10 @@ import ProfileScreen from "./screens/ProfileScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Register from "./screens/Register";
 import Login from "./screens/Login";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import AuthContext from "./AuthContext";
+import { EventDetails } from "./screens/Events/EventDetails";
+import CreateEvent from "./screens/CreateEvent";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
@@ -19,7 +21,9 @@ export type RootStackParamList = {
   Login: undefined;
   Navbar: undefined;
   Settings: undefined;
-  CreateEvent: undefined
+  EventDetails: { id: string };
+  CreateEvent: undefined;
+  History: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -77,6 +81,16 @@ export default function App() {
               />
             </>
           )}
+          <Stack.Screen
+            name="EventDetails"
+            component={EventDetails}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="CreateEvent"
+            component={CreateEvent}
+            options={{ headerShown: false }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthContext.Provider>

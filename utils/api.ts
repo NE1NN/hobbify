@@ -1,5 +1,5 @@
-import * as FileSystem from 'expo-file-system';
-const filePath = FileSystem.documentDirectory + 'data.json';
+import * as FileSystem from "expo-file-system";
+const filePath = FileSystem.documentDirectory + "data.json";
 import {
   collection,
   getDocs,
@@ -10,14 +10,17 @@ import {
   setDoc,
   addDoc,
   updateDoc,
-} from 'firebase/firestore';
-import { db } from '../firebaseConfig';
-import { Timestamp } from 'firebase/firestore';
-import { generateSimpleToken, generateUserId } from './helpers';
+  arrayUnion,
+  arrayRemove,
+} from "firebase/firestore";
+import { db } from "../firebaseConfig";
+import { Timestamp } from "firebase/firestore";
+import { generateSimpleToken, generateUserId } from "./helpers";
 
-type User = {
+export type User = {
   userId: number;
-  name: string;
+  username: string;
+  profilePicture: string;
 };
 
 export type Event = {
@@ -32,6 +35,7 @@ export type Event = {
   isPublic: boolean;
   members: number[];
   likes: number[];
+  membersLimit: number;
 };
 
 export type createEventDetails = {
@@ -47,7 +51,7 @@ export type createEventDetails = {
 };
 
 export const getEvents = async () => {
-  const eventsCol = collection(db, 'events');
+  const eventsCol = collection(db, "events");
   const eventsDocs = await getDocs(eventsCol);
 
   const events: Event[] = eventsDocs.docs.map(
@@ -61,18 +65,18 @@ export const getEvents = async () => {
 };
 
 export const searchEvent = async (searchValue: string) => {
-  const eventsCol = collection(db, 'events');
+  const eventsCol = collection(db, "events");
   const eventsQuery = query(
     eventsCol,
-    where('nameLowered', '>=', searchValue.toLowerCase()),
-    where('nameLowered', '<=', searchValue.toLowerCase() + '\uf8ff')
+    where("nameLowered", ">=", searchValue.toLowerCase()),
+    where("nameLowered", "<=", searchValue.toLowerCase() + "\uf8ff")
   );
   const eventDocs = await getDocs(eventsQuery);
   return eventDocs;
 };
 
 export const getEvent = async (eventId: string) => {
-  const eventsCol = collection(db, 'events');
+  const eventsCol = collection(db, "events");
   const eventRef = doc(eventsCol, eventId);
   const eventDoc = await getDoc(eventRef);
   return eventDoc;
@@ -83,14 +87,14 @@ export const registerUser = async (
   email: string,
   password: string
 ) => {
-  const userCol = collection(db, 'users');
+  const userCol = collection(db, "users");
 
-  const usernameQuery = query(userCol, where('username', '==', username));
+  const usernameQuery = query(userCol, where("username", "==", username));
   const querySnapshot = await getDocs(usernameQuery);
 
   if (!querySnapshot.empty) {
     // Username already exists
-    throw new Error('Username already taken');
+    throw new Error("Username already taken");
   }
 
   let user = {
@@ -100,6 +104,7 @@ export const registerUser = async (
     username,
     password,
     userId: generateUserId(),
+    profilePicture: null,
   };
 
   await addDoc(userCol, user);
@@ -110,11 +115,11 @@ export const registerUser = async (
 };
 
 export const loginUser = async (username: string, password: string) => {
-  const usersCol = collection(db, 'users');
+  const usersCol = collection(db, "users");
   const q = query(
     usersCol,
-    where('username', '==', username),
-    where('password', '==', password)
+    where("username", "==", username),
+    where("password", "==", password)
   );
   const querySnapshot = await getDocs(q);
   try {
@@ -132,13 +137,13 @@ export const loginUser = async (username: string, password: string) => {
       return null;
     }
   } catch (e) {
-    console.log('meki', e);
+    console.log("meki", e);
   }
 };
 
 export const getUserDetail = async (userId: number) => {
-  const usersCol = collection(db, 'users');
-  const q = query(usersCol, where('userId', '==', userId));
+  const usersCol = collection(db, "users");
+  const q = query(usersCol, where("userId", "==", userId));
   const querySnapshot = await getDocs(q);
 
   if (!querySnapshot.empty) {
@@ -149,6 +154,29 @@ export const getUserDetail = async (userId: number) => {
 
     return username;
   } else {
+    return null;
+  }
+};
+
+export const getUserData = async (userId: number): Promise<User | null> => {
+  const usersCol = collection(db, "users");
+  const userQuery = query(usersCol, where("userId", "==", userId));
+  const querySnapshot = await getDocs(userQuery);
+
+  if (!querySnapshot.empty) {
+    const userDoc = querySnapshot.docs[0];
+    const userData = userDoc.data();
+
+    // Assuming the user data in Firestore matches the User type structure
+    const user: User = {
+      userId: userData.userId,
+      username: userData.username,
+      profilePicture: userData.profilePicture,
+    };
+
+    return user;
+  } else {
+    // Return null if the user is not found
     return null;
   }
 };
@@ -165,7 +193,7 @@ export const createEvent = async (props: createEventDetails) => {
     isPublic,
     membersLimit,
   } = props;
-  const eventsCol = collection(db, 'events');
+  const eventsCol = collection(db, "events");
 
   // Extracting date parts
   let year = date.getFullYear();
@@ -209,14 +237,43 @@ export const createEvent = async (props: createEventDetails) => {
   return {};
 };
 
+export const likeEvent = async (eventId: string, userId: number) => {
+  const eventRef = doc(db, "events", eventId);
+
+  try {
+    const eventDoc = await getDoc(eventRef);
+
+    if (eventDoc.exists()) {
+      const eventData = eventDoc.data();
+
+      // Check if the user has already liked the event
+      if (!eventData.likes.includes(userId)) {
+        // Update the likes array to include the new userId
+        await updateDoc(eventRef, {
+          likes: arrayUnion(userId),
+        });
+      } else {
+        await updateDoc(eventRef, {
+          likes: arrayRemove(userId),
+        });
+        console.log("Like removed");
+      }
+    } else {
+      console.log("Event not found");
+    }
+  } catch (error) {
+    console.error("Error liking event:", error);
+  }
+};
+
 export const updateProfPic = async (newProfPic: string, userId: number) => {
-  const usersCol = collection(db, 'users');
-  const userQuery = query(usersCol, where('userId', '==', userId));
+  const usersCol = collection(db, "users");
+  const userQuery = query(usersCol, where("userId", "==", userId));
 
   try {
     const querySnapshot = await getDocs(userQuery);
     if (querySnapshot.empty) {
-      console.log('No user found with the given userId');
+      console.log("No user found with the given userId");
       return;
     }
 
@@ -224,8 +281,8 @@ export const updateProfPic = async (newProfPic: string, userId: number) => {
     const userDocRef = userDoc.ref;
 
     await updateDoc(userDocRef, { profPic: newProfPic });
-    console.log('Profile picture updated successfully');
+    console.log("Profile picture updated successfully");
   } catch (err) {
-    console.error('Failed updating profile picture', err);
+    console.error("Failed updating profile picture", err);
   }
 };
