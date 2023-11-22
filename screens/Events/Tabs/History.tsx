@@ -34,13 +34,13 @@ export default function History() {
   if (!contextValue) {
     throw new Error("No value");
   }
-
+  const navigation =
+    useNavigation<
+      NativeStackNavigationProp<RootStackParamList, "CreateEvent">
+    >();
+  
   const handleCreateEvent = () => {
     // TODO
-    const navigation =
-      useNavigation<
-        NativeStackNavigationProp<RootStackParamList, "CreateEvent">
-      >();
 
     navigation.navigate("CreateEvent");
   };
