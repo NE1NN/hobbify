@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,10 +9,9 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import UserEventCard from "../components/UserEventCard";
 import ToggleButton from "../components/RatingButton";
 import userIcon from "../assets/icon.png";
-import { submitRating } from "../utils/api";
+import { Event, User, getEvent, getUserData, submitRating } from "../utils/api";
 import AuthContext from "../AuthContext";
 import { useNavigation } from "@react-navigation/core";
 
@@ -77,14 +76,45 @@ const RatingScreen = ({ route }: { route: any }) => {
     }
   };
 
+  const [member, setMember] = useState<User | null>(null);
+  const [event, setEvent] = useState<Event | null>(null);
+
+  useEffect(() => {
+    const retrieveMember = async () => {
+      console.log(uId);
+      try {
+        setMember(await getUserData(uId));
+        console.log("foo", await getUserData(uId));
+      } catch (error) {
+        console.error("error:", error);
+      }
+    };
+    retrieveMember();
+    const retrieveEvent = async () => {
+      try {
+        const snapshot = await getEvent(eventId.toString());
+        if (snapshot.exists()) {
+          const eventData = snapshot.data() as Event;
+          setEvent(eventData);
+          console.log(eventData);
+        } else {
+          console.log("no event");
+        }
+      } catch (error) {
+        console.error("error:", error);
+      }
+    };
+    retrieveEvent();
+  }, []);
+
   return (
     // <SafeAreaView style={styles.SafeAreaView}>
     <ScrollView style={styles.SafeAreaView}>
       <View style={styles.container}>
         <Image source={userIcon} style={styles.userImage} />
         <View style={styles.userDetailsContainer}>
-          <Text style={styles.userName}>Name</Text>
-          <Text style={styles.userDescription}>From xyz</Text>
+          <Text style={styles.userName}>{member?.username}</Text>
+          <Text style={styles.userDescription}>From {event?.name}</Text>
         </View>
       </View>
       <Text>{selectedButtons.toString()}</Text>

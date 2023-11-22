@@ -20,6 +20,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../App";
 import { useNavigation } from "@react-navigation/core";
 import AuthContext from "../../AuthContext";
+import { useFocusEffect } from "@react-navigation/native";
 
 interface MemberProps {
   uId: number;
@@ -50,33 +51,28 @@ export function Member({ uId, eventId }: MemberProps) {
     navigation.navigate("RatingScreen", { id: uId, eventId: eventId });
   };
 
-  useEffect(() => {
-    const retrieveMember = async () => {
-      console.log(uId);
-      try {
-        setMember(await getUserData(uId));
-        console.log("foo", await getUserData(uId));
-      } catch (error) {
-        console.error("error:", error);
+  const fetchMemberAndEventData = async () => {
+    try {
+      setMember(await getUserData(uId));
+      const snapshot = await getEvent(eventId.toString());
+      if (snapshot.exists()) {
+        const eventData = snapshot.data() as Event;
+        setEvent(eventData);
+        console.log(eventData);
+      } else {
+        console.log("no event");
       }
-    };
-    retrieveMember();
-    const retrieveEvent = async () => {
-      try {
-        const snapshot = await getEvent(eventId.toString());
-        if (snapshot.exists()) {
-          const eventData = snapshot.data() as Event;
-          setEvent(eventData);
-          console.log(eventData);
-        } else {
-          console.log("no event");
-        }
-      } catch (error) {
-        console.error("error:", error);
-      }
-    };
-    retrieveEvent();
-  }, []);
+    } catch (error) {
+      console.error("error:", error);
+    }
+  };
+
+  // Use useFocusEffect to fetch data when the component comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchMemberAndEventData();
+    }, [])
+  );
 
   useEffect(() => {
     console.log(member);

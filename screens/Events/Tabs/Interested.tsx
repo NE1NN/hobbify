@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import EventCard from "../../../components/EventCard";
 import { Event, getEvents, getInterestedEvents, getUpcomingEvents } from "../../../utils/api";
-import UserEventCard from "../../../components/UserEventCard";
 import AuthContext from "../../../AuthContext";
 
 export default function Interested() {
@@ -46,13 +45,6 @@ export default function Interested() {
           <Text style={styles.createEventText}>Create an Event</Text>
         </TouchableOpacity>
 
-        <Text style={styles.sectionHeading}>Review Users</Text>
-        <View>
-          <UserEventCard />
-          <UserEventCard />
-          <UserEventCard />
-        </View>
-
         <Text style={styles.sectionHeading}>Interested Events</Text>
         <View style={styles.eventsContainer}>
           {events.map((event, idx) => {
@@ -75,6 +67,7 @@ export default function Interested() {
 const styles = StyleSheet.create({
   SafeAreaView: {
     marginHorizontal: 25,
+    height: '100%'
   },
   sectionHeading: {
     fontSize: 28,

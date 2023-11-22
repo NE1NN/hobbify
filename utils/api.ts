@@ -12,11 +12,11 @@ import {
   updateDoc,
   arrayUnion,
   arrayRemove,
-} from 'firebase/firestore';
-import { db } from '../firebaseConfig';
-import { Timestamp } from 'firebase/firestore';
-import { generateSimpleToken, generateUserId } from './helpers';
-import { async } from '@firebase/util';
+} from "firebase/firestore";
+import { db } from "../firebaseConfig";
+import { Timestamp } from "firebase/firestore";
+import { generateSimpleToken, generateUserId } from "./helpers";
+import { async } from "@firebase/util";
 
 export type User = {
   userId: number;
@@ -80,8 +80,8 @@ export const getUpcomingEvents = async () => {
 
   const todayTimestamp = Timestamp.fromDate(today);
 
-  const eventsCol = collection(db, 'events');
-  const eventsQuery = query(eventsCol, where('time', '>', todayTimestamp));
+  const eventsCol = collection(db, "events");
+  const eventsQuery = query(eventsCol, where("time", ">", todayTimestamp));
   const eventsDocs = await getDocs(eventsQuery);
 
   const events: Event[] = eventsDocs.docs.map(
@@ -95,8 +95,8 @@ export const getUpcomingEvents = async () => {
 };
 
 export const getInterestedEvents = async (userId: number) => {
-  const usersCol = collection(db, 'users');
-  const q = query(usersCol, where('userId', '==', userId));
+  const usersCol = collection(db, "users");
+  const q = query(usersCol, where("userId", "==", userId));
   const querySnapshot = await getDocs(q);
 
   if (!querySnapshot.empty) {
@@ -107,7 +107,7 @@ export const getInterestedEvents = async (userId: number) => {
     let eventData: Event[] = [];
 
     const eventPromises = interestedEvents.map(async (eventId) => {
-      const eventDoc = doc(db, 'events', eventId);
+      const eventDoc = doc(db, "events", eventId);
       const eventSnapshot = await getDoc(eventDoc);
       if (eventSnapshot.exists()) {
         eventData.push({
@@ -125,8 +125,8 @@ export const getInterestedEvents = async (userId: number) => {
 };
 
 export const getMyEvents = async (userId: number) => {
-  const eventsCol = collection(db, 'events');
-  const eventsQuery = query(eventsCol, where('creatorId', '==', userId));
+  const eventsCol = collection(db, "events");
+  const eventsQuery = query(eventsCol, where("creatorId", "==", userId));
   const eventsDocs = await getDocs(eventsQuery);
 
   const events: Event[] = eventsDocs.docs.map(
@@ -236,8 +236,8 @@ export const getUserDetail = async (userId: number) => {
 };
 
 export const getUserData = async (userId: number): Promise<User | null> => {
-  const usersCol = collection(db, 'users');
-  const userQuery = query(usersCol, where('userId', '==', userId));
+  const usersCol = collection(db, "users");
+  const userQuery = query(usersCol, where("userId", "==", userId));
   const querySnapshot = await getDocs(userQuery);
 
   if (!querySnapshot.empty) {
@@ -317,7 +317,7 @@ export const createEvent = async (props: createEventDetails) => {
 };
 
 export const likeEvent = async (eventId: string, userId: number) => {
-  const eventRef = doc(db, 'events', eventId);
+  const eventRef = doc(db, "events", eventId);
 
   try {
     const eventDoc = await getDoc(eventRef);
@@ -335,13 +335,13 @@ export const likeEvent = async (eventId: string, userId: number) => {
         await updateDoc(eventRef, {
           likes: arrayRemove(userId),
         });
-        console.log('Like removed');
+        console.log("Like removed");
       }
     } else {
-      console.log('Event not found');
+      console.log("Event not found");
     }
   } catch (error) {
-    console.error('Error liking event:', error);
+    console.error("Error liking event:", error);
   }
 };
 
@@ -362,7 +362,7 @@ export const updateProfPic = async (newProfPic: string, userId: number) => {
     await updateDoc(userDocRef, { profPic: newProfPic });
     console.log("Profile picture updated successfully");
   } catch (err) {
-    console.error('Failed updating profile picture', err);
+    console.error("Failed updating profile picture", err);
   }
 };
 
@@ -395,12 +395,16 @@ export const joinEvent = async (eventId: string, userId: number) => {
   }
 };
 
-export const submitRating = async (ratedUserId: number, raterUserId: number, traits: string[]) => {
+export const submitRating = async (
+  ratedUserId: number,
+  raterUserId: number,
+  traits: string[]
+) => {
   const usersCol = collection(db, "users");
   const q = query(usersCol, where("userId", "==", ratedUserId));
   const querySnapshot = await getDocs(q);
 
-  console.log('rating', ratedUserId, raterUserId, traits);
+  console.log("rating", ratedUserId, raterUserId, traits);
 
   if (!querySnapshot.empty) {
     const ratedUserDoc = querySnapshot.docs[0];
@@ -409,16 +413,16 @@ export const submitRating = async (ratedUserId: number, raterUserId: number, tra
     // Ensure ratedUserData.ratings is initialized as an empty array
     const ratings = ratedUserData.ratings || [];
 
-    const updatedRatings = ratings.map(rating => {
+    const updatedRatings = ratings.map((rating) => {
       if (traits.includes(rating.trait)) {
-        return { ...rating, score: rating.score + 1 }; 
+        return { ...rating, score: rating.score + 1 };
       }
       return rating;
     });
 
-    traits.forEach(trait => {
-      if (!updatedRatings.some(rating => rating.trait === trait)) {
-        updatedRatings.push({ trait, score: 1 }); 
+    traits.forEach((trait) => {
+      if (!updatedRatings.some((rating) => rating.trait === trait)) {
+        updatedRatings.push({ trait, score: 1 });
       }
     });
 
@@ -435,10 +439,68 @@ export const submitRating = async (ratedUserId: number, raterUserId: number, tra
       console.log("Rating submitted successfully");
     } else {
       console.log("User has already rated this person");
-      throw Error ("User has already rated this person");
+      throw Error("User has already rated this person");
     }
   } else {
     console.log("Rated user not found");
-    throw Error ("Rated user not found");
+    throw Error("Rated user not found");
+  }
+};
+
+export const populateReviewUsers = async (
+  ratedUserId: number
+): Promise<{ user: User; eventId: string }[]> => {
+  const usersCol = collection(db, "users");
+  const eventsCol = collection(db, "events");
+  const commonEventsWithUsers: { user: User; eventId: string }[] = [];
+
+  try {
+    const ratedUserQuery = query(usersCol, where("userId", "==", ratedUserId));
+    const ratedUserSnapshot = await getDocs(ratedUserQuery);
+
+    if (!ratedUserSnapshot.empty) {
+      const ratedUserData: User = ratedUserSnapshot.docs[0].data() as User;
+
+      // Fetch events where the rated user is a member
+      const eventsQuery = query(
+        eventsCol,
+        where("members", "array-contains", ratedUserId)
+      );
+      const eventsSnapshot = await getDocs(eventsQuery);
+      const ratedUserEvents = eventsSnapshot.docs.map((doc) => doc.id);
+
+      const allUsersSnapshot = await getDocs(usersCol);
+
+      for (const doc of allUsersSnapshot.docs) {
+        const userData: User = doc.data() as User;
+        if (
+          userData.userId !== ratedUserId &&
+          !ratedUserData.rated.includes(userData.userId)
+        ) {
+          // Check if this user has any common events with the rated user
+          const userEventsQuery = query(
+            eventsCol,
+            where("members", "array-contains", userData.userId)
+          );
+          const userEventsSnapshot = await getDocs(userEventsQuery);
+          const userEvents = userEventsSnapshot.docs.map((doc) => doc.id);
+
+          for (const eventId of ratedUserEvents) {
+            if (userEvents.includes(eventId)) {
+              commonEventsWithUsers.push({ user: userData, eventId });
+              break; // Stop after finding the first common event
+            }
+          }
+        }
+      }
+
+      return commonEventsWithUsers;
+    } else {
+      console.log("Rated user not found");
+      throw new Error("Rated user not found");
+    }
+  } catch (error) {
+    console.error("Error in populateReviewUsersWithCommonEvent:", error);
+    throw error;
   }
 };
