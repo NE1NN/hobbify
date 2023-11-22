@@ -66,16 +66,8 @@ export default function App() {
                 component={Navbar}
                 options={{ headerShown: false }}
               />
-              <Stack.Screen
-                name="EventDetails"
-                component={EventDetails}
-                // options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="CreateEvent"
-                component={CreateEvent}
-                // options={{ headerShown: false }}
-              />
+              <Stack.Screen name="EventDetails" component={EventDetails} />
+              <Stack.Screen name="CreateEvent" component={CreateEvent} />
             </>
           ) : (
             <>
@@ -91,16 +83,6 @@ export default function App() {
               />
             </>
           )}
-          {/* <Stack.Screen
-            name="EventDetails"
-            component={EventDetails}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="CreateEvent"
-            component={CreateEvent}
-            options={{ headerShown: false }}
-          /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </AuthContext.Provider>
