@@ -1,19 +1,12 @@
 import { Settings, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "./screens/HomeScreen";
 import Navbar from "./components/Navbar";
-import SettingsScreen from "./screens/SettingsScreen";
-import ProfileScreen from "./screens/ProfileScreen";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Register from "./screens/Register";
 import Login from "./screens/Login";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import AuthContext from "./AuthContext";
-import { EventDetails } from "./screens/Events/EventDetails";
-import CreateEvent from "./screens/CreateEvent";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React from "react";
 import EventDetails from "./screens/Events/EventDetails";
 
 export type RootStackParamList = {
