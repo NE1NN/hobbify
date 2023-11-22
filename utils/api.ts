@@ -12,10 +12,11 @@ import {
   updateDoc,
   arrayUnion,
   arrayRemove,
-} from "firebase/firestore";
-import { db } from "../firebaseConfig";
-import { Timestamp } from "firebase/firestore";
-import { generateSimpleToken, generateUserId } from "./helpers";
+} from 'firebase/firestore';
+import { db } from '../firebaseConfig';
+import { Timestamp } from 'firebase/firestore';
+import { generateSimpleToken, generateUserId } from './helpers';
+import { async } from '@firebase/util';
 
 export type User = {
   userId: number;
@@ -53,6 +54,71 @@ export type createEventDetails = {
 export const getEvents = async () => {
   const eventsCol = collection(db, "events");
   const eventsDocs = await getDocs(eventsCol);
+
+  const events: Event[] = eventsDocs.docs.map(
+    (doc) =>
+      ({
+        eventId: doc.id,
+        ...doc.data(),
+      } as Event)
+  );
+  return events;
+};
+
+export const getUpcomingEvents = async () => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const todayTimestamp = Timestamp.fromDate(today);
+
+  const eventsCol = collection(db, 'events');
+  const eventsQuery = query(eventsCol, where('time', '>', todayTimestamp));
+  const eventsDocs = await getDocs(eventsQuery);
+
+  const events: Event[] = eventsDocs.docs.map(
+    (doc) =>
+      ({
+        eventId: doc.id,
+        ...doc.data(),
+      } as Event)
+  );
+  return events;
+};
+
+export const getInterestedEvents = async (userId: number) => {
+  const usersCol = collection(db, 'users');
+  const q = query(usersCol, where('userId', '==', userId));
+  const querySnapshot = await getDocs(q);
+
+  if (!querySnapshot.empty) {
+    const userDoc = querySnapshot.docs[0];
+    const userData = userDoc.data();
+
+    const interestedEvents: string[] = userData.interestedEvents;
+    let eventData: Event[] = [];
+
+    const eventPromises = interestedEvents.map(async (eventId) => {
+      const eventDoc = doc(db, 'events', eventId);
+      const eventSnapshot = await getDoc(eventDoc);
+      if (eventSnapshot.exists()) {
+        eventData.push({
+          eventId: eventSnapshot.id,
+          ...eventSnapshot.data(),
+        } as Event);
+      }
+    });
+
+    await Promise.all(eventPromises);
+    return eventData;
+  } else {
+    return null;
+  }
+};
+
+export const getMyEvents = async (userId: number) => {
+  const eventsCol = collection(db, 'events');
+  const eventsQuery = query(eventsCol, where('creatorId', '==', userId));
+  const eventsDocs = await getDocs(eventsQuery);
 
   const events: Event[] = eventsDocs.docs.map(
     (doc) =>
@@ -159,8 +225,8 @@ export const getUserDetail = async (userId: number) => {
 };
 
 export const getUserData = async (userId: number): Promise<User | null> => {
-  const usersCol = collection(db, "users");
-  const userQuery = query(usersCol, where("userId", "==", userId));
+  const usersCol = collection(db, 'users');
+  const userQuery = query(usersCol, where('userId', '==', userId));
   const querySnapshot = await getDocs(userQuery);
 
   if (!querySnapshot.empty) {
@@ -238,7 +304,7 @@ export const createEvent = async (props: createEventDetails) => {
 };
 
 export const likeEvent = async (eventId: string, userId: number) => {
-  const eventRef = doc(db, "events", eventId);
+  const eventRef = doc(db, 'events', eventId);
 
   try {
     const eventDoc = await getDoc(eventRef);
@@ -256,13 +322,13 @@ export const likeEvent = async (eventId: string, userId: number) => {
         await updateDoc(eventRef, {
           likes: arrayRemove(userId),
         });
-        console.log("Like removed");
+        console.log('Like removed');
       }
     } else {
-      console.log("Event not found");
+      console.log('Event not found');
     }
   } catch (error) {
-    console.error("Error liking event:", error);
+    console.error('Error liking event:', error);
   }
 };
 
@@ -283,6 +349,6 @@ export const updateProfPic = async (newProfPic: string, userId: number) => {
     await updateDoc(userDocRef, { profPic: newProfPic });
     console.log("Profile picture updated successfully");
   } catch (err) {
-    console.error("Failed updating profile picture", err);
+    console.error('Failed updating profile picture', err);
   }
 };

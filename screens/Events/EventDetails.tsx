@@ -15,7 +15,7 @@ import { timestampToString } from "../../utils/helpers";
 import { Members } from "../../components/Member/Members";
 import AuthContext from "../../AuthContext";
 
-export function EventDetails({ route }: { route: any }) {
+export default function EventDetails({ route }: { route: any }) {
   const id = route.params.id;
 
   const [event, setEvent] = useState<Event | null>(null);
