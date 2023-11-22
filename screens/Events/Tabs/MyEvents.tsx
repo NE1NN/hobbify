@@ -10,15 +10,10 @@ import {
 } from 'react-native';
 import EventCard from '../../../components/EventCard';
 import { Event, getEvents, getMyEvents } from '../../../utils/api';
-import UserEventCard from '../../../components/UserEventCard';
 import AuthContext from '../../../AuthContext';
 
 export default function MyEvents() {
   const [events, setEvents] = useState<Event[]>([]);
-
-  const handleCreateEvent = () => {
-    // TODO
-  };
 
   const authContextValue = useContext(AuthContext);
 
@@ -34,25 +29,15 @@ export default function MyEvents() {
       setEvents(events);
     };
     populateEvents();
+
+    const intervalId = setInterval(populateEvents, 1000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
     <SafeAreaView style={styles.SafeAreaView}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <TouchableOpacity
-          style={styles.createEventButton}
-          onPress={handleCreateEvent}
-        >
-          <Text style={styles.createEventText}>Create an Event</Text>
-        </TouchableOpacity>
-
-        <Text style={styles.sectionHeading}>Review Users</Text>
-        <View>
-          <UserEventCard />
-          <UserEventCard />
-          <UserEventCard />
-        </View>
-
         <Text style={styles.sectionHeading}>My Events</Text>
         <View style={styles.eventsContainer}>
           {events.map((event, idx) => (
@@ -74,6 +59,7 @@ export default function MyEvents() {
 const styles = StyleSheet.create({
   SafeAreaView: {
     marginHorizontal: 25,
+    height: '100%'
   },
   sectionHeading: {
     fontSize: 28,

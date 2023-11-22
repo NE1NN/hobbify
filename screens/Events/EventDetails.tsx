@@ -9,11 +9,20 @@ import {
   View,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { Event, getEvent, likeEvent } from "../../utils/api";
+import {
+  Event,
+  User,
+  getEvent,
+  getUserData,
+  joinEvent,
+  likeEvent,
+} from "../../utils/api";
 import { FontAwesome } from "@expo/vector-icons";
 import { timestampToString } from "../../utils/helpers";
 import { Members } from "../../components/Member/Members";
 import AuthContext from "../../AuthContext";
+import defaultProfilePicture from "../../assets/icon.png";
+
 
 export default function EventDetails({ route }: { route: any }) {
   const id = route.params.id;
@@ -22,6 +31,7 @@ export default function EventDetails({ route }: { route: any }) {
   const [readMore, setReadMore] = useState(false);
   const [showMembers, setShowMembers] = useState(false);
   const [liked, setLiked] = useState(false);
+  const [joined, setJoined] = useState(false);
 
   const contextValue = useContext(AuthContext);
   if (!contextValue) {
@@ -29,6 +39,29 @@ export default function EventDetails({ route }: { route: any }) {
   }
 
   const uId = contextValue.userId;
+
+  const [memberData, setMemberData] = useState<User[]>([]); // State variable to store member data
+
+  useEffect(() => {
+    // Function to fetch member data
+    const fetchMemberData = async () => {
+      if (event) {
+        const memberIds = event.members.slice(0, 5); // Get up to 5 member IDs
+        const membersData: User[] = [];
+
+        for (const memberId of memberIds) {
+          const user = await getUserData(memberId);
+          if (user) {
+            membersData.push(user);
+          }
+        }
+
+        setMemberData(membersData);
+      }
+    };
+
+    fetchMemberData();
+  }, [event]);
 
   const handleReadMore = () => {
     setReadMore(!readMore);
@@ -50,8 +83,13 @@ export default function EventDetails({ route }: { route: any }) {
     }
   };
 
-  const handleJoin = () => {
-    // TODO
+  const handleJoin = async () => {
+    try {
+      await joinEvent(id, uId);
+      setJoined(!joined);
+    } catch (error) {
+      console.log("error", error);
+    }
   };
 
   const handleShowMembers = () => {
@@ -65,7 +103,7 @@ export default function EventDetails({ route }: { route: any }) {
         if (snapshot.exists()) {
           const eventData = snapshot.data() as Event;
           setEvent(eventData);
-          console.log(eventData);
+          // console.log(eventData);
         } else {
           console.log("no event");
         }
@@ -82,6 +120,11 @@ export default function EventDetails({ route }: { route: any }) {
     } else {
       setLiked(false);
     }
+    if (event && event.members.includes(uId)) {
+      setJoined(true);
+    } else {
+      setJoined(false);
+    }
   }, [event, uId]);
 
   if (!event) {
@@ -95,7 +138,15 @@ export default function EventDetails({ route }: { route: any }) {
         <Image source={{ uri: event.thumbnail }} style={styles.Image} />
 
         {showMembers ? (
-          <Members eventId={id} />
+          <>
+            <TouchableOpacity
+              style={styles.CloseButton}
+              onPress={handleShowMembers}
+            >
+              <FontAwesome name="close" size={25} color={"black"} />
+            </TouchableOpacity>
+            <Members eventId={id} />
+          </>
         ) : (
           <View style={styles.DetailsContainer}>
             <View style={styles.SubtitleDescriptionContainer}>
@@ -140,8 +191,20 @@ export default function EventDetails({ route }: { route: any }) {
                 </Text>
               </View>
               <View style={styles.IconsContainer}>
-                <Text>Icons</Text>
-                <Text style={styles.MemberText}>and More</Text>
+                {memberData.map((member, index) => (
+                  <Image
+                    key={index}
+                    source={
+                      member.profilePicture === undefined ||
+                      member.profilePicture === null
+                        ? defaultProfilePicture
+                        : {uri: member.profilePicture}
+                    }                    style={styles.MemberProfilePicture}
+                  />
+                ))}
+                {memberData.length < event.members.length && (
+                  <Text style={styles.MemberText}>and More</Text>
+                )}
               </View>
             </TouchableOpacity>
 
@@ -153,7 +216,12 @@ export default function EventDetails({ route }: { route: any }) {
                   <FontAwesome name="heart-o" size={41} />
                 )}
               </TouchableOpacity>
-              <TouchableOpacity style={styles.JoinButton} onPress={handleJoin}>
+              <TouchableOpacity
+                style={
+                  joined ? styles.JoinButtonDeactivated : styles.JoinButton
+                }
+                onPress={handleJoin}
+              >
                 <Text style={styles.JoinText}>Join Event</Text>
               </TouchableOpacity>
             </View>
@@ -262,6 +330,15 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     backgroundColor: "#28B67E",
   },
+  JoinButtonDeactivated: {
+    width: 240,
+    height: 40,
+    paddingHorizontal: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 15,
+    backgroundColor: "#1D4C4F",
+  },
   LikeButton: {
     flex: 1,
     alignItems: "center",
@@ -273,4 +350,20 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "600",
   },
+  CloseButton: {
+    marginTop: 20,
+    alignSelf: "flex-end",
+    marginRight: 10,
+    width: 30,
+    height: 30,
+    borderRadius: 25,
+    backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  MemberProfilePicture: {
+    width: 25,
+    height: 25,
+    borderRadius: 25
+  }
 });

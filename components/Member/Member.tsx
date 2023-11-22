@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Image,
   SafeAreaView,
@@ -7,52 +7,107 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { User, getUserData, getUserDetail } from "../../utils/api";
+import {
+  Event,
+  User,
+  getEvent,
+  getUserData,
+  getUserDetail,
+} from "../../utils/api";
+import React from "react";
 import defaultProfilePicture from "../../assets/icon.png";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../App";
+import { useNavigation } from "@react-navigation/core";
+import AuthContext from "../../AuthContext";
+import { useFocusEffect } from "@react-navigation/native";
 
-export function Member({ uId }: { uId: number }) {
+interface MemberProps {
+  uId: number;
+  eventId: number;
+}
+
+export function Member({ uId, eventId }: MemberProps) {
+  const contextValue = useContext(AuthContext);
+  if (!contextValue) {
+    throw new Error("No value");
+  }
+
+  const loggedInUserId = contextValue.userId;
+
+  // console.log(uId, loggedInUserId, eventId);
+  // console.log("eventId member 1", eventId);
+
   const [member, setMember] = useState<User | null>(null);
+  const [event, setEvent] = useState<Event | null>(null);
 
-  useEffect(() => {
-    const retrieveMember = async () => {
-      console.log(uId);
-      try {
-        setMember(await getUserData(uId));
-        console.log("foo", await getUserData(uId));
-      } catch (error) {
-        console.error("error:", error);
+  const navigation =
+    useNavigation<
+      NativeStackNavigationProp<RootStackParamList, "RatingScreen">
+    >();
+
+  const handlePress = async () => {
+    // console.log("eventId member", eventId);
+    navigation.navigate("RatingScreen", { id: uId, eventId: eventId });
+  };
+
+  const fetchMemberAndEventData = async () => {
+    try {
+      setMember(await getUserData(uId));
+      const snapshot = await getEvent(eventId.toString());
+      if (snapshot.exists()) {
+        const eventData = snapshot.data() as Event;
+        setEvent(eventData);
+        // console.log(eventData);
+      } else {
+        console.log("no event");
       }
-    };
-    retrieveMember();
-  }, []);
+    } catch (error) {
+      console.error("error:", error);
+    }
+  };
 
-  useEffect(() => {
-    console.log(member);
-  }, [Member]);
+  // Use useFocusEffect to fetch data when the component comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchMemberAndEventData();
+    }, [])
+  );
 
-  if (!member) {
-    console.log(member);
+  // useEffect(() => {
+  //   console.log(member);
+  // }, [Member]);
+
+  if (!member || !event) {
+    // console.log("member", member);
     return <Text>Loading M...</Text>; // Loading state
   }
 
+
   return (
-      <View style={styles.Container}>
-        <View style={styles.ProfileContainer}>
-          <Image
-            source={
-              member.profilePicture === undefined ||
-              member.profilePicture === null
-                ? defaultProfilePicture
-                : member.profilePicture
-            }
-            style={styles.ProfilePicture}
-          />
-          <Text style={styles.NameText}>Foo{member.username}</Text>
-        </View>
-        <TouchableOpacity style={styles.RateButton}>
+    <View style={styles.Container}>
+      <View style={styles.ProfileContainer}>
+        <Image
+          source={
+            member.profilePicture === undefined ||
+            member.profilePicture === null
+              ? defaultProfilePicture
+              : {uri: member.profilePicture}
+          }
+          style={styles.ProfilePicture}
+        />
+        <Text style={styles.NameText}>{member.username}</Text>
+      </View>
+      {loggedInUserId !== uId &&
+      event.members.includes(loggedInUserId) &&
+      !member?.rated?.includes(loggedInUserId) ? (
+        <TouchableOpacity style={styles.RateButton} onPress={handlePress}>
           <Text style={styles.RateText}>Rate</Text>
         </TouchableOpacity>
-      </View>
+      ) : (
+        <></>
+      )}
+    </View>
   );
 }
 
@@ -62,6 +117,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: "auto",
+    marginBottom: 15,
   },
   ProfileContainer: {
     flexDirection: "row",
@@ -74,9 +130,9 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   NameText: {
-    color: 'white',
+    color: "white",
     fontSize: 25,
-    fontWeight: '400',
+    fontWeight: "400",
     lineHeight: 24,
   },
   RateButton: {

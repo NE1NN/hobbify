@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Button,
   SafeAreaView,
@@ -9,19 +9,32 @@ import {
   View,
 } from "react-native";
 import EventCard from "../../../components/EventCard";
-import { Event, getEvents } from "../../../utils/api";
-import UserEventCard from "../../../components/UserEventCard";
+import {
+  Event,
+  User,
+  getEvents,
+  populateReviewUsers,
+} from "../../../utils/api";
+// import UserEventCard from "../../../components/UserEventCard";
 import { RootStackParamList } from "../../../App";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import AuthContext from "../../../AuthContext";
+import UserEventCard from "../../../components/UserEventCard";
+import { useFocusEffect } from "@react-navigation/native";
 
 type Props = NativeStackScreenProps<RootStackParamList, "History">;
 
 export default function History({ navigation }: Props) {
   const [events, setEvents] = useState<Event[]>([]);
+  const [users, setUsers] = useState<{ user: User; eventId: string }[]>([]);
+  const contextValue = useContext(AuthContext);
+  if (!contextValue) {
+    throw new Error("No value");
+  }
 
   const handleCreateEvent = () => {
     // TODO
-    navigation.navigate('CreateEvent')
+    navigation.navigate("CreateEvent");
   };
 
   useEffect(() => {
@@ -30,7 +43,31 @@ export default function History({ navigation }: Props) {
       setEvents(events);
     };
     populateEvents();
+
+    const getReviewUsers = async () => {
+      const usersData = await populateReviewUsers(contextValue.userId);
+      setUsers(usersData);
+    };
+    getReviewUsers();
+
+    const intervalId = setInterval(populateEvents, 1000);
+
+    return () => clearInterval(intervalId);
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const getReviewUsers = async () => {
+        const usersData = await populateReviewUsers(contextValue.userId);
+        setUsers(usersData);
+      };
+      getReviewUsers();
+    }, [])
+  );
+
+  // useEffect(() => {
+  //   console.log('user',users)
+  // }, [users]);
 
   return (
     <SafeAreaView style={styles.SafeAreaView}>
@@ -44,9 +81,15 @@ export default function History({ navigation }: Props) {
 
         <Text style={styles.sectionHeading}>Review Users</Text>
         <View>
-          <UserEventCard />
-          <UserEventCard />
-          <UserEventCard />
+          {users.map((user, idx) => (
+            <UserEventCard
+              key={idx}
+              // Pass the relevant user data as props to the UserEventCard component
+              uId={user.user.userId}
+              eventId={user.eventId}
+              // Add any other props you need to pass here
+            />
+          ))}
         </View>
 
         <Text style={styles.sectionHeading}>Past Events</Text>

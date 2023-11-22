@@ -1,6 +1,11 @@
 import { Settings, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import HomeScreen from "./screens/HomeScreen";
+import SettingsScreen from "./screens/SettingsScreen";
+import ProfileScreen from "./screens/ProfileScreen";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import RatingScreen from "./screens/RatingScreen";
 import Navbar from "./components/Navbar";
 import Register from "./screens/Register";
 import Login from "./screens/Login";
@@ -17,8 +22,10 @@ export type RootStackParamList = {
   Navbar: undefined;
   Settings: undefined;
   EventDetails: { id: string };
+  RatingScreen: { id: number; eventId: number };
   CreateEvent: undefined;
   History: undefined;
+  
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -67,6 +74,7 @@ export default function App() {
                 options={{ headerShown: false }}
               />
               <Stack.Screen name="EventDetails" component={EventDetails} />
+              <Stack.Screen name="RatingScreen" component={RatingScreen} />
               <Stack.Screen name="CreateEvent" component={CreateEvent} />
             </>
           ) : (
