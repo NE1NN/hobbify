@@ -42,10 +42,6 @@ const RatingScreen = ({ route }: { route: any }) => {
 
   const raterId = contextValue.userId;
 
-  console.log("uId", uId);
-  console.log("eventId", eventId);
-  console.log("raterId", raterId);
-
   const [selectedButtons, setSelectedButtons] = useState<string[]>([]);
 
   // Function to handle button press
@@ -81,7 +77,6 @@ const RatingScreen = ({ route }: { route: any }) => {
 
   useEffect(() => {
     const retrieveMember = async () => {
-      console.log(uId);
       try {
         setMember(await getUserData(uId));
         console.log("foo", await getUserData(uId));
@@ -96,7 +91,6 @@ const RatingScreen = ({ route }: { route: any }) => {
         if (snapshot.exists()) {
           const eventData = snapshot.data() as Event;
           setEvent(eventData);
-          console.log(eventData);
         } else {
           console.log("no event");
         }
@@ -108,7 +102,7 @@ const RatingScreen = ({ route }: { route: any }) => {
   }, []);
 
   if (!member) {
-    return <Text>Loading..</Text>
+    return <Text>Loading..</Text>;
   }
 
   return (
@@ -201,7 +195,9 @@ const styles = StyleSheet.create({
   buttonInactive: {
     backgroundColor: "#1D4C4F",
   },
-  buttonText: {},
+  buttonText: {
+    color: 'white'
+  },
   heading: {
     fontWeight: "600",
     fontSize: 20,

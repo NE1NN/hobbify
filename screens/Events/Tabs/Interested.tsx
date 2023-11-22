@@ -9,7 +9,12 @@ import {
   View,
 } from "react-native";
 import EventCard from "../../../components/EventCard";
-import { Event, getEvents, getInterestedEvents, getUpcomingEvents } from "../../../utils/api";
+import {
+  Event,
+  getEvents,
+  getInterestedEvents,
+  getUpcomingEvents,
+} from "../../../utils/api";
 import AuthContext from "../../../AuthContext";
 
 export default function Interested() {
@@ -18,7 +23,7 @@ export default function Interested() {
   const authContextValue = useContext(AuthContext);
 
   if (!authContextValue) {
-    throw new Error('Auth context value is empty');
+    throw new Error("Auth context value is empty");
   }
 
   const { userId } = authContextValue;
@@ -28,7 +33,6 @@ export default function Interested() {
       const events = await getInterestedEvents(userId);
       if (events) {
         setEvents(events);
-        // console.log(events)
       }
     };
     populateEvents();
@@ -44,16 +48,17 @@ export default function Interested() {
         <Text style={styles.sectionHeading}>Interested Events</Text>
         <View style={styles.eventsContainer}>
           {events.map((event, idx) => {
-            // console.log(event)
-            return <EventCard
-              key={idx}
-              name={event.name}
-              location={event.location}
-              thumbnail={event.thumbnail}
-              time={event.time}
-              eventId={event.eventId}
-            />
-})}
+            return (
+              <EventCard
+                key={idx}
+                name={event.name}
+                location={event.location}
+                thumbnail={event.thumbnail}
+                time={event.time}
+                eventId={event.eventId}
+              />
+            );
+          })}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -63,7 +68,7 @@ export default function Interested() {
 const styles = StyleSheet.create({
   SafeAreaView: {
     marginHorizontal: 25,
-    height: '100%'
+    height: "100%",
   },
   sectionHeading: {
     fontSize: 28,

@@ -35,9 +35,6 @@ export function Member({ uId, eventId }: MemberProps) {
 
   const loggedInUserId = contextValue.userId;
 
-  // console.log(uId, loggedInUserId, eventId);
-  // console.log("eventId member 1", eventId);
-
   const [member, setMember] = useState<User | null>(null);
   const [event, setEvent] = useState<Event | null>(null);
 
@@ -47,7 +44,6 @@ export function Member({ uId, eventId }: MemberProps) {
     >();
 
   const handlePress = async () => {
-    // console.log("eventId member", eventId);
     navigation.navigate("RatingScreen", { id: uId, eventId: eventId });
   };
 
@@ -58,7 +54,6 @@ export function Member({ uId, eventId }: MemberProps) {
       if (snapshot.exists()) {
         const eventData = snapshot.data() as Event;
         setEvent(eventData);
-        // console.log(eventData);
       } else {
         console.log("no event");
       }
@@ -74,15 +69,9 @@ export function Member({ uId, eventId }: MemberProps) {
     }, [])
   );
 
-  // useEffect(() => {
-  //   console.log(member);
-  // }, [Member]);
-
   if (!member || !event) {
-    // console.log("member", member);
     return <Text>Loading M...</Text>; // Loading state
   }
-
 
   return (
     <View style={styles.Container}>
@@ -92,7 +81,7 @@ export function Member({ uId, eventId }: MemberProps) {
             member.profilePicture === undefined ||
             member.profilePicture === null
               ? defaultProfilePicture
-              : {uri: member.profilePicture}
+              : { uri: member.profilePicture }
           }
           style={styles.ProfilePicture}
         />

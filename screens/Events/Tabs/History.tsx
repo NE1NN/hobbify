@@ -65,10 +65,6 @@ export default function History({ navigation }: Props) {
     }, [])
   );
 
-  // useEffect(() => {
-  //   console.log('user',users)
-  // }, [users]);
-
   return (
     <SafeAreaView style={styles.SafeAreaView}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -86,7 +82,7 @@ export default function History({ navigation }: Props) {
               key={idx}
               // Pass the relevant user data as props to the UserEventCard component
               uId={user.user.userId}
-              eventId={user.eventId}
+              eventId={Number(user.eventId)}
               // Add any other props you need to pass here
             />
           ))}
