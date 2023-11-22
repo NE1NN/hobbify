@@ -107,11 +107,23 @@ const RatingScreen = ({ route }: { route: any }) => {
     retrieveEvent();
   }, []);
 
+  if (!member) {
+    return <Text>Loading..</Text>
+  }
+
   return (
     // <SafeAreaView style={styles.SafeAreaView}>
     <ScrollView style={styles.SafeAreaView}>
       <View style={styles.container}>
-        <Image source={userIcon} style={styles.userImage} />
+        <Image
+          source={
+            member.profilePicture === undefined ||
+            member.profilePicture === null
+              ? userIcon
+              : { uri: member.profilePicture }
+          }
+          style={styles.userImage}
+        />
         <View style={styles.userDetailsContainer}>
           <Text style={styles.userName}>{member?.username}</Text>
           <Text style={styles.userDescription}>From {event?.name}</Text>
