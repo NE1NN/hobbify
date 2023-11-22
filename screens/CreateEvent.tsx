@@ -20,7 +20,9 @@ import AuthContext from "../AuthContext";
 type Props = NativeStackScreenProps<RootStackParamList, "CreateEvent">;
 
 const CreateEvent = ({ navigation }: Props) => {
-  const [thumbnail, setThumbnail] = useState("");
+  const [thumbnail, setThumbnail] = useState(
+    "https://static.thenounproject.com/png/2616533-200.png"
+  );
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [location, setLocation] = useState("");
@@ -44,10 +46,12 @@ const CreateEvent = ({ navigation }: Props) => {
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      cameraType: ImagePicker.CameraType.back,
+      base64: true,
     });
-
     if (!result.canceled) {
-      setThumbnail(result.assets[0].uri);
+      const newProfPic = result.assets[0].uri;
+      setThumbnail(newProfPic);
     }
   };
 
