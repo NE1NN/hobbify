@@ -14,6 +14,7 @@ import ToggleButton from "../components/RatingButton";
 import userIcon from "../assets/icon.png";
 import { submitRating } from "../utils/api";
 import AuthContext from "../AuthContext";
+import { useNavigation } from "@react-navigation/core";
 
 const adjectives = [
   "Kind",

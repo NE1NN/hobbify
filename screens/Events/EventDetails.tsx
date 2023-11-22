@@ -9,11 +9,20 @@ import {
   View,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { Event, getEvent, joinEvent, likeEvent } from "../../utils/api";
+import {
+  Event,
+  User,
+  getEvent,
+  getUserData,
+  joinEvent,
+  likeEvent,
+} from "../../utils/api";
 import { FontAwesome } from "@expo/vector-icons";
 import { timestampToString } from "../../utils/helpers";
 import { Members } from "../../components/Member/Members";
 import AuthContext from "../../AuthContext";
+import defaultProfilePicture from "../../assets/icon.png";
+
 
 export function EventDetails({ route }: { route: any }) {
   const id = route.params.id;
@@ -30,6 +39,29 @@ export function EventDetails({ route }: { route: any }) {
   }
 
   const uId = contextValue.userId;
+
+  const [memberData, setMemberData] = useState<User[]>([]); // State variable to store member data
+
+  useEffect(() => {
+    // Function to fetch member data
+    const fetchMemberData = async () => {
+      if (event) {
+        const memberIds = event.members.slice(0, 5); // Get up to 5 member IDs
+        const membersData: User[] = [];
+
+        for (const memberId of memberIds) {
+          const user = await getUserData(memberId);
+          if (user) {
+            membersData.push(user);
+          }
+        }
+
+        setMemberData(membersData);
+      }
+    };
+
+    fetchMemberData();
+  }, [event]);
 
   const handleReadMore = () => {
     setReadMore(!readMore);
@@ -111,7 +143,7 @@ export function EventDetails({ route }: { route: any }) {
               style={styles.CloseButton}
               onPress={handleShowMembers}
             >
-                  <FontAwesome name="close" size={25} color={"black"} />
+              <FontAwesome name="close" size={25} color={"black"} />
             </TouchableOpacity>
             <Members eventId={id} />
           </>
@@ -159,8 +191,20 @@ export function EventDetails({ route }: { route: any }) {
                 </Text>
               </View>
               <View style={styles.IconsContainer}>
-                <Text>Icons</Text>
-                <Text style={styles.MemberText}>and More</Text>
+                {memberData.map((member, index) => (
+                  <Image
+                    key={index}
+                    source={
+                      member.profilePicture === undefined ||
+                      member.profilePicture === null
+                        ? defaultProfilePicture
+                        : member.profilePicture
+                    }                    style={styles.MemberProfilePicture}
+                  />
+                ))}
+                {memberData.length < event.members.length && (
+                  <Text style={styles.MemberText}>and More</Text>
+                )}
               </View>
             </TouchableOpacity>
 
@@ -308,13 +352,18 @@ const styles = StyleSheet.create({
   },
   CloseButton: {
     marginTop: 20,
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
     marginRight: 10,
-    width: 30, 
+    width: 30,
     height: 30,
-    borderRadius: 25, 
-    backgroundColor: 'red', 
-    justifyContent: 'center',
-    alignItems: 'center',
-  }  
+    borderRadius: 25,
+    backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  MemberProfilePicture: {
+    width: 25,
+    height: 25,
+    borderRadius: 25
+  }
 });
