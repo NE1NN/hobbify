@@ -195,7 +195,9 @@ const styles = StyleSheet.create({
   buttonInactive: {
     backgroundColor: "#1D4C4F",
   },
-  buttonText: {},
+  buttonText: {
+    color: 'white'
+  },
   heading: {
     fontWeight: "600",
     fontSize: 20,
