@@ -18,7 +18,6 @@ export default function Ongoing() {
     const populateEvents = async () => {
       const events = await getUpcomingEvents();
       setEvents(events);
-      // console.log(events)
     };
     populateEvents();
 
@@ -51,7 +50,7 @@ export default function Ongoing() {
 const styles = StyleSheet.create({
   SafeAreaView: {
     marginHorizontal: 25,
-    height: '100%'
+    height: "100%",
   },
   sectionHeading: {
     fontSize: 28,

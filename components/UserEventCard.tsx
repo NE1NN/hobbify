@@ -40,7 +40,6 @@ export default function UserEventCard({ uId, eventId }: Props) {
     >();
 
   const handlePress = async () => {
-    // console.log("eventId member", eventId);
     navigation.navigate("RatingScreen", { id: uId, eventId: eventId });
   };
 

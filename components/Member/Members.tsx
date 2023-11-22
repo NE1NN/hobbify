@@ -12,11 +12,7 @@ export function Members({ eventId }: { eventId: number }) {
     const retrieveEvent = async () => {
       try {
         const snapshot = await getEvent(id);
-
-        console.log(snapshot);
-
         const eventData = snapshot.data() as Event;
-        console.log('eventdata', eventData)
         setEvent(eventData);
       } catch (error) {
         console.error("error:", error);
@@ -54,7 +50,7 @@ const styles = StyleSheet.create({
   MemberTitleCountContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 12
+    marginBottom: 12,
   },
   MemberText: {
     color: "white",

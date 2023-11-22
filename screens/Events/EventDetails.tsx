@@ -23,7 +23,6 @@ import { Members } from "../../components/Member/Members";
 import AuthContext from "../../AuthContext";
 import defaultProfilePicture from "../../assets/icon.png";
 
-
 export default function EventDetails({ route }: { route: any }) {
   const id = route.params.id;
 
@@ -103,7 +102,6 @@ export default function EventDetails({ route }: { route: any }) {
         if (snapshot.exists()) {
           const eventData = snapshot.data() as Event;
           setEvent(eventData);
-          // console.log(eventData);
         } else {
           console.log("no event");
         }
@@ -198,8 +196,9 @@ export default function EventDetails({ route }: { route: any }) {
                       member.profilePicture === undefined ||
                       member.profilePicture === null
                         ? defaultProfilePicture
-                        : {uri: member.profilePicture}
-                    }                    style={styles.MemberProfilePicture}
+                        : { uri: member.profilePicture }
+                    }
+                    style={styles.MemberProfilePicture}
                   />
                 ))}
                 {memberData.length < event.members.length && (
@@ -364,6 +363,6 @@ const styles = StyleSheet.create({
   MemberProfilePicture: {
     width: 25,
     height: 25,
-    borderRadius: 25
-  }
+    borderRadius: 25,
+  },
 });

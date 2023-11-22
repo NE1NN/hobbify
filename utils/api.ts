@@ -96,12 +96,15 @@ export const getUpcomingEvents = async () => {
 
 export const getInterestedEvents = async (userId: number) => {
   const eventsCol = collection(db, "events");
-  const eventsQuery = query(eventsCol, where("likes", "array-contains", userId));
+  const eventsQuery = query(
+    eventsCol,
+    where("likes", "array-contains", userId)
+  );
   const querySnapshot = await getDocs(eventsQuery);
 
   let likedEvents: Event[] = [];
 
-  querySnapshot.forEach(doc => {
+  querySnapshot.forEach((doc) => {
     likedEvents.push({
       eventId: doc.id,
       ...doc.data(),
@@ -201,7 +204,7 @@ export const loginUser = async (username: string, password: string) => {
       return null;
     }
   } catch (e) {
-    console.log("meki", e);
+    console.log(e);
   }
 };
 
@@ -390,8 +393,6 @@ export const submitRating = async (
   const usersCol = collection(db, "users");
   const q = query(usersCol, where("userId", "==", ratedUserId));
   const querySnapshot = await getDocs(q);
-
-  console.log("rating", ratedUserId, raterUserId, traits);
 
   if (!querySnapshot.empty) {
     const ratedUserDoc = querySnapshot.docs[0];
