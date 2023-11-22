@@ -69,6 +69,7 @@ export default function ProfileScreen() {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       aspect: [16, 16],
       cameraType: ImagePicker.CameraType.back,
+      base64: true
     });
     if (!result.canceled) {
       const newProfPic = result.assets[0].uri
