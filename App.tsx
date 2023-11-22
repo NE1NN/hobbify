@@ -1,13 +1,14 @@
-import { Settings, StyleSheet } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Navbar from './components/Navbar';
-import Register from './screens/Register';
-import Login from './screens/Login';
-import { useState, useEffect } from 'react';
-import AuthContext from './AuthContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import EventDetails from './screens/Events/EventDetails';
+import { Settings, StyleSheet } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Navbar from "./components/Navbar";
+import Register from "./screens/Register";
+import Login from "./screens/Login";
+import { useState, useEffect } from "react";
+import AuthContext from "./AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import EventDetails from "./screens/Events/EventDetails";
+import CreateEvent from "./screens/CreateEvent";
 
 export type RootStackParamList = {
   Register: undefined;
@@ -26,7 +27,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export default function App() {
   useEffect(() => {
     const getUser = async () => {
-      const value = await AsyncStorage.getItem('user');
+      const value = await AsyncStorage.getItem("user");
       if (value !== null) {
         setLoggedin(Number(value));
       }
@@ -65,7 +66,16 @@ export default function App() {
                 component={Navbar}
                 options={{ headerShown: false }}
               />
-              <Stack.Screen name="EventDetails" component={EventDetails} />
+              <Stack.Screen
+                name="EventDetails"
+                component={EventDetails}
+                // options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="CreateEvent"
+                component={CreateEvent}
+                // options={{ headerShown: false }}
+              />
             </>
           ) : (
             <>
@@ -81,6 +91,16 @@ export default function App() {
               />
             </>
           )}
+          {/* <Stack.Screen
+            name="EventDetails"
+            component={EventDetails}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="CreateEvent"
+            component={CreateEvent}
+            options={{ headerShown: false }}
+          /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </AuthContext.Provider>
@@ -90,8 +110,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
