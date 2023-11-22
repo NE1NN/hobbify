@@ -455,52 +455,39 @@ export const populateReviewUsers = async (
   const commonEventsWithUsers: { user: User; eventId: string }[] = [];
 
   try {
-    const ratedUserQuery = query(usersCol, where("userId", "==", ratedUserId));
-    const ratedUserSnapshot = await getDocs(ratedUserQuery);
+    const allUsersSnapshot = await getDocs(usersCol);
+    const ratedUserEventsSnapshot = await getDocs(
+      query(eventsCol, where("members", "array-contains", ratedUserId))
+    );
+    const ratedUserEvents = ratedUserEventsSnapshot.docs.map((doc) => doc.id);
 
-    if (!ratedUserSnapshot.empty) {
-      const ratedUserData: User = ratedUserSnapshot.docs[0].data() as User;
+    for (const userDoc of allUsersSnapshot.docs) {
+      const user: User = userDoc.data() as User;
 
-      // Fetch events where the rated user is a member
-      const eventsQuery = query(
-        eventsCol,
-        where("members", "array-contains", ratedUserId)
-      );
-      const eventsSnapshot = await getDocs(eventsQuery);
-      const ratedUserEvents = eventsSnapshot.docs.map((doc) => doc.id);
-
-      const allUsersSnapshot = await getDocs(usersCol);
-
-      for (const doc of allUsersSnapshot.docs) {
-        const userData: User = doc.data() as User;
-        if (
-          userData.userId !== ratedUserId &&
-          !ratedUserData.rated.includes(userData.userId)
-        ) {
-          // Check if this user has any common events with the rated user
-          const userEventsQuery = query(
-            eventsCol,
-            where("members", "array-contains", userData.userId)
-          );
-          const userEventsSnapshot = await getDocs(userEventsQuery);
-          const userEvents = userEventsSnapshot.docs.map((doc) => doc.id);
-
-          for (const eventId of ratedUserEvents) {
-            if (userEvents.includes(eventId)) {
-              commonEventsWithUsers.push({ user: userData, eventId });
-              break; // Stop after finding the first common event
-            }
-          }
-        }
+      if (
+        user.userId === ratedUserId ||
+        (user.rated && user.rated.includes(ratedUserId))
+      ) {
+        continue; // Skip if it's the same user or already rated
       }
 
-      return commonEventsWithUsers;
-    } else {
-      console.log("Rated user not found");
-      throw new Error("Rated user not found");
+      const userEventsSnapshot = await getDocs(
+        query(eventsCol, where("members", "array-contains", user.userId))
+      );
+      const userEvents = userEventsSnapshot.docs.map((doc) => doc.id);
+
+      const commonEventId = userEvents.find((eventId) =>
+        ratedUserEvents.includes(eventId)
+      );
+
+      if (commonEventId) {
+        commonEventsWithUsers.push({ user, eventId: commonEventId });
+      }
     }
+
+    return commonEventsWithUsers;
   } catch (error) {
-    console.error("Error in populateReviewUsersWithCommonEvent:", error);
+    console.error("Error in populateReviewUsers:", error);
     throw error;
   }
 };
