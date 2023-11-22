@@ -319,7 +319,10 @@ export const submitRating = async (ratedUserId: number, raterUserId: number, tra
     const ratedUserDoc = querySnapshot.docs[0];
     const ratedUserData: User = ratedUserDoc.data() as User;
 
-    const updatedRatings = ratedUserData.ratings.map(rating => {
+    // Ensure ratedUserData.ratings is initialized as an empty array
+    const ratings = ratedUserData.ratings || [];
+
+    const updatedRatings = ratings.map(rating => {
       if (traits.includes(rating.trait)) {
         return { ...rating, score: rating.score + 1 }; 
       }
@@ -332,22 +335,23 @@ export const submitRating = async (ratedUserId: number, raterUserId: number, tra
       }
     });
 
-    if (!ratedUserData.rated.includes(raterUserId)) {
-      const updatedRated = [...ratedUserData.rated, raterUserId];
+    // Ensure ratedUserData.rated is initialized as an empty array
+    const rated = ratedUserData.rated || [];
+
+    if (!rated.includes(raterUserId)) {
+      const updatedRated = [...rated, raterUserId];
 
       await updateDoc(ratedUserDoc.ref, {
         ratings: updatedRatings,
         rated: updatedRated,
       });
       console.log("Rating submitted successfully");
-      throw Error ("Rating submitted successfully")
     } else {
       console.log("User has already rated this person");
-      throw Error ("User has already rated this person")
-
+      throw Error ("User has already rated this person");
     }
   } else {
     console.log("Rated user not found");
-    throw Error ("Rated user not found")
+    throw Error ("Rated user not found");
   }
 };

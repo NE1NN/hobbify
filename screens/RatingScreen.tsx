@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import UserEventCard from "../components/UserEventCard";
@@ -30,6 +31,8 @@ const adjectives = [
 ];
 
 const RatingScreen = ({ route }: { route: any }) => {
+  const navigation = useNavigation();
+
   const { id, eventId } = route.params;
   const uId = id;
   const contextValue = useContext(AuthContext);
@@ -54,46 +57,59 @@ const RatingScreen = ({ route }: { route: any }) => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     try {
-      submitRating(raterId, uId, selectedButtons);
-    } catch (error) {}
+      await submitRating(uId, raterId, selectedButtons);
+      navigation.goBack();
+    } catch (error) {
+      Alert.alert(
+        "Error",
+        String(error), // Convert error to a string
+        [
+          {
+            text: "OK",
+            onPress: () => console.log("OK Pressed"),
+            style: "cancel",
+          },
+        ]
+      );
+    }
   };
 
   return (
     // <SafeAreaView style={styles.SafeAreaView}>
-      <ScrollView style={styles.SafeAreaView}>
-        <View style={styles.container}>
-          <Image source={userIcon} style={styles.userImage} />
-          <View style={styles.userDetailsContainer}>
-            <Text style={styles.userName}>Name</Text>
-            <Text style={styles.userDescription}>From xyz</Text>
-          </View>
+    <ScrollView style={styles.SafeAreaView}>
+      <View style={styles.container}>
+        <Image source={userIcon} style={styles.userImage} />
+        <View style={styles.userDetailsContainer}>
+          <Text style={styles.userName}>Name</Text>
+          <Text style={styles.userDescription}>From xyz</Text>
         </View>
-        <Text>{selectedButtons.toString()}</Text>
-        <Text style={styles.heading}>What do you think of this user?</Text>
-        <View style={styles.ButtonContainer}>
-          {adjectives.map((label) => (
-            <ToggleButton
-              key={label}
-              label={label}
-              isSelected={selectedButtons.includes(label)}
-              onPress={handleButtonPress}
-            />
-          ))}
-        </View>
-        <TouchableOpacity
-          style={[
-            styles.confirmButton,
-            selectedButtons.length > 0
-              ? styles.buttonActive
-              : styles.buttonInactive,
-          ]}
-          onPress={handleSubmit}
-        >
-          <Text style={styles.buttonText}>Confirm</Text>
-        </TouchableOpacity>
-      </ScrollView>
+      </View>
+      <Text>{selectedButtons.toString()}</Text>
+      <Text style={styles.heading}>What do you think of this user?</Text>
+      <View style={styles.ButtonContainer}>
+        {adjectives.map((label) => (
+          <ToggleButton
+            key={label}
+            label={label}
+            isSelected={selectedButtons.includes(label)}
+            onPress={handleButtonPress}
+          />
+        ))}
+      </View>
+      <TouchableOpacity
+        style={[
+          styles.confirmButton,
+          selectedButtons.length > 0
+            ? styles.buttonActive
+            : styles.buttonInactive,
+        ]}
+        onPress={handleSubmit}
+      >
+        <Text style={styles.buttonText}>Confirm</Text>
+      </TouchableOpacity>
+    </ScrollView>
     // </SafeAreaView>
   );
 };

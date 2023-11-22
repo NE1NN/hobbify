@@ -7,7 +7,13 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { User, getUserData, getUserDetail } from "../../utils/api";
+import {
+  Event,
+  User,
+  getEvent,
+  getUserData,
+  getUserDetail,
+} from "../../utils/api";
 import React from "react";
 import defaultProfilePicture from "../../assets/icon.png";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -28,11 +34,11 @@ export function Member({ uId, eventId }: MemberProps) {
 
   const loggedInUserId = contextValue.userId;
 
-  console.log(uId, loggedInUserId, eventId)
-  console.log('eventId member 1', eventId)
-
+  console.log(uId, loggedInUserId, eventId);
+  console.log("eventId member 1", eventId);
 
   const [member, setMember] = useState<User | null>(null);
+  const [event, setEvent] = useState<Event | null>(null);
 
   const navigation =
     useNavigation<
@@ -40,7 +46,7 @@ export function Member({ uId, eventId }: MemberProps) {
     >();
 
   const handlePress = async () => {
-    console.log('eventId member', eventId)
+    console.log("eventId member", eventId);
     navigation.navigate("RatingScreen", { id: uId, eventId: eventId });
   };
 
@@ -55,16 +61,32 @@ export function Member({ uId, eventId }: MemberProps) {
       }
     };
     retrieveMember();
+    const retrieveEvent = async () => {
+      try {
+        const snapshot = await getEvent(eventId.toString());
+        if (snapshot.exists()) {
+          const eventData = snapshot.data() as Event;
+          setEvent(eventData);
+          console.log(eventData);
+        } else {
+          console.log("no event");
+        }
+      } catch (error) {
+        console.error("error:", error);
+      }
+    };
+    retrieveEvent();
   }, []);
 
   useEffect(() => {
     console.log(member);
   }, [Member]);
 
-  if (!member) {
-    console.log('member', member);
+  if (!member || !event) {
+    console.log("member", member);
     return <Text>Loading M...</Text>; // Loading state
   }
+
 
   return (
     <View style={styles.Container}>
@@ -80,7 +102,9 @@ export function Member({ uId, eventId }: MemberProps) {
         />
         <Text style={styles.NameText}>{member.username}</Text>
       </View>
-      {loggedInUserId !== uId ? (
+      {loggedInUserId !== uId &&
+      event.members.includes(loggedInUserId) &&
+      !member?.rated?.includes(loggedInUserId) ? (
         <TouchableOpacity style={styles.RateButton} onPress={handlePress}>
           <Text style={styles.RateText}>Rate</Text>
         </TouchableOpacity>
@@ -97,7 +121,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: "auto",
-    marginBottom: 15
+    marginBottom: 15,
   },
   ProfileContainer: {
     flexDirection: "row",
