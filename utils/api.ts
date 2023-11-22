@@ -181,7 +181,6 @@ export const getUserData = async (userId: number): Promise<User | null> => {
   }
 };
 
-
 export const createEvent = async (props: createEventDetails) => {
   const {
     creatorId,
@@ -251,11 +250,11 @@ export const likeEvent = async (eventId: string, userId: number) => {
       if (!eventData.likes.includes(userId)) {
         // Update the likes array to include the new userId
         await updateDoc(eventRef, {
-          likes: arrayUnion(userId)
+          likes: arrayUnion(userId),
         });
       } else {
         await updateDoc(eventRef, {
-          likes: arrayRemove(userId)
+          likes: arrayRemove(userId),
         });
         console.log("Like removed");
       }
@@ -264,5 +263,26 @@ export const likeEvent = async (eventId: string, userId: number) => {
     }
   } catch (error) {
     console.error("Error liking event:", error);
+  }
+};
+
+export const updateProfPic = async (newProfPic: string, userId: number) => {
+  const usersCol = collection(db, "users");
+  const userQuery = query(usersCol, where("userId", "==", userId));
+
+  try {
+    const querySnapshot = await getDocs(userQuery);
+    if (querySnapshot.empty) {
+      console.log("No user found with the given userId");
+      return;
+    }
+
+    const userDoc = querySnapshot.docs[0];
+    const userDocRef = userDoc.ref;
+
+    await updateDoc(userDocRef, { profPic: newProfPic });
+    console.log("Profile picture updated successfully");
+  } catch (err) {
+    console.error("Failed updating profile picture", err);
   }
 };
