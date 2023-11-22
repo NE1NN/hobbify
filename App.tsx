@@ -8,8 +8,10 @@ import ProfileScreen from "./screens/ProfileScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Register from "./screens/Register";
 import Login from "./screens/Login";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import AuthContext from "./AuthContext";
+import { EventDetails } from "./screens/Events/EventDetails";
+import CreateEvent from "./screens/CreateEvent";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React from "react";
 import EventDetails from "./screens/Events/EventDetails";
@@ -22,6 +24,7 @@ export type RootStackParamList = {
   Settings: undefined;
   EventDetails: { id: string };
   CreateEvent: undefined;
+  History: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

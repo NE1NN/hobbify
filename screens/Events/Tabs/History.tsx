@@ -11,13 +11,18 @@ import {
 import EventCard from "../../../components/EventCard";
 import { Event, getEvents } from "../../../utils/api";
 import UserEventCard from "../../../components/UserEventCard";
+import { RootStackParamList } from "../../../App";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-export default function History() {
+type Props = NativeStackScreenProps<RootStackParamList, "History">;
+
+export default function History({ navigation }: Props) {
   const [events, setEvents] = useState<Event[]>([]);
 
   const handleCreateEvent = () => {
     // TODO
-  }
+    navigation.navigate('CreateEvent')
+  };
 
   useEffect(() => {
     const populateEvents = async () => {
@@ -30,7 +35,10 @@ export default function History() {
   return (
     <SafeAreaView style={styles.SafeAreaView}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <TouchableOpacity style={styles.createEventButton} onPress={handleCreateEvent}>
+        <TouchableOpacity
+          style={styles.createEventButton}
+          onPress={handleCreateEvent}
+        >
           <Text style={styles.createEventText}>Create an Event</Text>
         </TouchableOpacity>
 

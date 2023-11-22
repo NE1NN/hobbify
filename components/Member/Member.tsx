@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   SafeAreaView,
@@ -8,7 +8,6 @@ import {
   View,
 } from "react-native";
 import { User, getUserData, getUserDetail } from "../../utils/api";
-import React from "react";
 import defaultProfilePicture from "../../assets/icon.png";
 
 export function Member({ uId }: { uId: number }) {
