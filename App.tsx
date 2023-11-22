@@ -24,6 +24,7 @@ export type RootStackParamList = {
   RatingScreen: { id: number; eventId: number };
   CreateEvent: undefined;
   History: undefined;
+  
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

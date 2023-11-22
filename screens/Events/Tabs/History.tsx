@@ -49,6 +49,10 @@ export default function History({ navigation }: Props) {
       setUsers(usersData);
     };
     getReviewUsers();
+
+    const intervalId = setInterval(populateEvents, 1000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   useFocusEffect(

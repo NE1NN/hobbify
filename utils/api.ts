@@ -95,33 +95,20 @@ export const getUpcomingEvents = async () => {
 };
 
 export const getInterestedEvents = async (userId: number) => {
-  const usersCol = collection(db, "users");
-  const q = query(usersCol, where("userId", "==", userId));
-  const querySnapshot = await getDocs(q);
+  const eventsCol = collection(db, "events");
+  const eventsQuery = query(eventsCol, where("likes", "array-contains", userId));
+  const querySnapshot = await getDocs(eventsQuery);
 
-  if (!querySnapshot.empty) {
-    const userDoc = querySnapshot.docs[0];
-    const userData = userDoc.data();
+  let likedEvents: Event[] = [];
 
-    const interestedEvents: string[] = userData.interestedEvents;
-    let eventData: Event[] = [];
+  querySnapshot.forEach(doc => {
+    likedEvents.push({
+      eventId: doc.id,
+      ...doc.data(),
+    } as Event);
+  });
 
-    const eventPromises = interestedEvents.map(async (eventId) => {
-      const eventDoc = doc(db, "events", eventId);
-      const eventSnapshot = await getDoc(eventDoc);
-      if (eventSnapshot.exists()) {
-        eventData.push({
-          eventId: eventSnapshot.id,
-          ...eventSnapshot.data(),
-        } as Event);
-      }
-    });
-
-    await Promise.all(eventPromises);
-    return eventData;
-  } else {
-    return null;
-  }
+  return likedEvents;
 };
 
 export const getMyEvents = async (userId: number) => {

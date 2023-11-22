@@ -15,10 +15,6 @@ import AuthContext from "../../../AuthContext";
 export default function Interested() {
   const [events, setEvents] = useState<Event[]>([]);
 
-  const handleCreateEvent = () => {
-    // TODO
-  }
-
   const authContextValue = useContext(AuthContext);
 
   if (!authContextValue) {
@@ -36,15 +32,15 @@ export default function Interested() {
       }
     };
     populateEvents();
+
+    const intervalId = setInterval(populateEvents, 1000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
     <SafeAreaView style={styles.SafeAreaView}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <TouchableOpacity style={styles.createEventButton} onPress={handleCreateEvent}>
-          <Text style={styles.createEventText}>Create an Event</Text>
-        </TouchableOpacity>
-
         <Text style={styles.sectionHeading}>Interested Events</Text>
         <View style={styles.eventsContainer}>
           {events.map((event, idx) => {
