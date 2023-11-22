@@ -7,6 +7,7 @@ import { getEvent } from "../utils/api";
 import { useNavigation } from "@react-navigation/native";
 import type { RootStackParamList } from "../App";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import splash from '../assets/splash.png'
 
 type EventCardProps = {
   name: string;
@@ -33,7 +34,7 @@ export default function EventCard({
 
   return (
     <TouchableOpacity style={styles.container} onPress={handlePress}>
-      <Image source={{ uri: thumbnail }} style={styles.image}></Image>
+      <Image source={{ uri: thumbnail ? thumbnail : splash }} style={styles.image}></Image>
       <View style={styles.detailsContainer}>
         <Text style={styles.eventName}>{name}</Text>
         <View style={styles.locationContainer}>

@@ -17,23 +17,31 @@ import {
 } from "../../../utils/api";
 // import UserEventCard from "../../../components/UserEventCard";
 import { RootStackParamList } from "../../../App";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import {
+  NativeStackNavigationProp,
+  NativeStackScreenProps,
+} from "@react-navigation/native-stack";
 import AuthContext from "../../../AuthContext";
 import UserEventCard from "../../../components/UserEventCard";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 type Props = NativeStackScreenProps<RootStackParamList, "History">;
 
-export default function History({ navigation }: Props) {
+export default function History() {
   const [events, setEvents] = useState<Event[]>([]);
   const [users, setUsers] = useState<{ user: User; eventId: string }[]>([]);
   const contextValue = useContext(AuthContext);
   if (!contextValue) {
     throw new Error("No value");
   }
-
+  const navigation =
+    useNavigation<
+      NativeStackNavigationProp<RootStackParamList, "CreateEvent">
+    >();
+  
   const handleCreateEvent = () => {
     // TODO
+
     navigation.navigate("CreateEvent");
   };
 

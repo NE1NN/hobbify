@@ -22,6 +22,7 @@ import { timestampToString } from "../../utils/helpers";
 import { Members } from "../../components/Member/Members";
 import AuthContext from "../../AuthContext";
 import defaultProfilePicture from "../../assets/icon.png";
+import splash from "../../assets/splash.png";
 
 export default function EventDetails({ route }: { route: any }) {
   const id = route.params.id;
@@ -133,7 +134,10 @@ export default function EventDetails({ route }: { route: any }) {
     <SafeAreaView style={styles.SafeAreaView}>
       <ScrollView>
         <Text style={styles.Title}>{event.name}</Text>
-        <Image source={{ uri: event.thumbnail }} style={styles.Image} />
+        <Image
+          source={event.thumbnail ? { uri: event.thumbnail } : defaultProfilePicture}
+          style={styles.Image}
+        />
 
         {showMembers ? (
           <>

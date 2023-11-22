@@ -43,9 +43,20 @@ export default function UserEventCard({ uId, eventId }: Props) {
     navigation.navigate("RatingScreen", { id: uId, eventId: eventId });
   };
 
+  if (!member) {
+    return <Text>Loading</Text>;
+  }
+
   return (
     <TouchableOpacity style={styles.container} onPress={handlePress}>
-      <Image source={userIcon} style={styles.userImage} />
+      <Image
+        source={
+          member.profilePicture === undefined || member.profilePicture === null
+            ? userIcon
+            : { uri: member.profilePicture }
+        }
+        style={styles.userImage}
+      />
       <View style={styles.userDetailsContainer}>
         <Text style={styles.userName}>{member?.username}</Text>
         <Text style={styles.userDescription}>From {event?.name}</Text>
