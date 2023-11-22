@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from 'react-native';
 import {
   Text,
   View,
@@ -7,61 +7,71 @@ import {
   ImageBackground,
   Button,
   Image,
-} from "react-native";
-import { useContext, useState } from "react";
-import defaultDp from "../assets/Profile/dp.jpg";
-import { Ionicons } from "@expo/vector-icons";
+} from 'react-native';
+import { useContext, useEffect, useState } from 'react';
+import defaultDp from '../assets/Profile/dp.jpg';
+import { Ionicons } from '@expo/vector-icons';
 
-import * as ImagePicker from "expo-image-picker";
-import ellipse from "../assets/Profile/ellipseGreen.png";
-import { ScrollView } from "react-native";
-import { updateProfPic } from "../utils/api";
-import AuthContext from "../AuthContext";
+import * as ImagePicker from 'expo-image-picker';
+import ellipse from '../assets/Profile/ellipseGreen.png';
+import { ScrollView } from 'react-native';
+import { getUserData, updateProfPic } from '../utils/api';
+import AuthContext from '../AuthContext';
 
 type PillProps = {
-  text: string | number
-}
+  text: string | number;
+};
 
 type PillAndCountProps = PillProps & {
-  count: string | number
-}
+  count: string | number;
+};
 
 type DisplayPicProps = {
-  dp: any
-  uri?: string
-}
+  dp: any;
+  uri?: string;
+};
 
 export default function ProfileScreen() {
-  const [img, setImg] = useState(""); // img needs to be saved somewhere
+  const [img, setImg] = useState(defaultDp); // img needs to be saved somewhere
   const [events, setEvents] = useState(157);
   const [missedEvents, setMissedEvents] = useState(12);
   const hobbies = [
-    "Badmington🏸",
-    "Drinking🍺",
-    "Maths🧮",
-    "Coding💻",
-    "Hiking🌄",
+    'Badmington🏸',
+    'Drinking🍺',
+    'Maths🧮',
+    'Coding💻',
+    'Hiking🌄',
   ];
 
   const personalityRatings = [
-    ["Kind", 67],
-    ["Introverted", 51],
-    ["Shy-Guy", 88],
-    ["Brainy🧠", 47],
-    ["Chill❄", 22],
-    ["Qwerky", 15],
-    ["Talented", 24],
-    ["Funny🤣", 30],
-    ["Singer🎤", 1],
+    ['Kind', 67],
+    ['Introverted', 51],
+    ['Shy-Guy', 88],
+    ['Brainy🧠', 47],
+    ['Chill❄', 22],
+    ['Qwerky', 15],
+    ['Talented', 24],
+    ['Funny🤣', 30],
+    ['Singer🎤', 1],
   ];
 
-  const authContextValue = useContext(AuthContext)
+  const authContextValue = useContext(AuthContext);
 
   if (!authContextValue) {
-    throw new Error('Auth context value empty')
+    throw new Error('Auth context value empty');
   }
 
-  const {userId} = authContextValue
+  const { userId } = authContextValue;
+
+  useEffect(() => {
+    const populateUserData = async () => {
+      const userData = await getUserData(userId);
+      if (userData?.profilePicture) {
+        setImg(userData?.profilePicture);
+      }
+    };
+    populateUserData()
+  });
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -69,12 +79,12 @@ export default function ProfileScreen() {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       aspect: [16, 16],
       cameraType: ImagePicker.CameraType.back,
-      base64: true
+      base64: true,
     });
     if (!result.canceled) {
-      const newProfPic = result.assets[0].uri
+      const newProfPic = result.assets[0].uri;
       setImg(newProfPic);
-      await updateProfPic(newProfPic, userId)
+      await updateProfPic(newProfPic, userId);
     }
   };
 
@@ -84,13 +94,13 @@ export default function ProfileScreen() {
         <View
           style={{
             borderWidth: 1,
-            backgroundColor: "#28B67E",
+            backgroundColor: '#28B67E',
             paddingVertical: 5,
             paddingHorizontal: 20,
             borderRadius: 15,
           }}
         >
-          <Text style={{ color: "white", fontWeight: "bold" }}>{text}</Text>
+          <Text style={{ color: 'white', fontWeight: 'bold' }}>{text}</Text>
         </View>
       </View>
     );
@@ -102,13 +112,13 @@ export default function ProfileScreen() {
         <View
           style={{
             borderWidth: 1,
-            backgroundColor: "#28B67E",
+            backgroundColor: '#28B67E',
             paddingVertical: 5,
             paddingHorizontal: 20,
             borderRadius: 15,
           }}
         >
-          <Text style={{ color: "white", fontWeight: "bold" }}>{text}</Text>
+          <Text style={{ color: 'white', fontWeight: 'bold' }}>{text}</Text>
         </View>
         <View
           style={{
@@ -117,13 +127,13 @@ export default function ProfileScreen() {
             width: 20,
             borderWidth: 1,
             borderRadius: 10,
-            backgroundColor: "red",
-            position: "absolute",
-            alignSelf: "flex-end",
-            justifyContent: "center",
+            backgroundColor: 'red',
+            position: 'absolute',
+            alignSelf: 'flex-end',
+            justifyContent: 'center',
           }}
         >
-          <Text style={{ alignSelf: "center", color: "white", fontSize: 10 }}>
+          <Text style={{ alignSelf: 'center', color: 'white', fontSize: 10 }}>
             {count}
           </Text>
         </View>
@@ -153,18 +163,18 @@ export default function ProfileScreen() {
 
         {/* Profile container */}
         <View style={styles.profileCont}>
-          <DisplayPic dp={defaultDp} uri={img} />
+          <DisplayPic dp={img} uri={img} />
           <Text style={styles.h2}>John Doe</Text>
           <Text style={styles.h3}>
             <Ionicons name="location" size={24} color="black" /> Waterloo
           </Text>
           <Text style={styles.h3}>
-            Attended events:{" "}
-            <Text style={{ fontWeight: "bold", color: "green" }}>{events}</Text>
+            Attended events:{' '}
+            <Text style={{ fontWeight: 'bold', color: 'green' }}>{events}</Text>
           </Text>
           <Text style={styles.h3}>
-            Missed events:{" "}
-            <Text style={{ fontWeight: "bold", color: "black" }}>
+            Missed events:{' '}
+            <Text style={{ fontWeight: 'bold', color: 'black' }}>
               {missedEvents}
             </Text>
           </Text>
@@ -175,7 +185,7 @@ export default function ProfileScreen() {
 
         {/* Hobbies & Interests */}
         <View style={styles.hobbiesCont}>
-          <Text style={[styles.h3, { fontWeight: "bold" }]}>
+          <Text style={[styles.h3, { fontWeight: 'bold' }]}>
             Hobbies & Interests
           </Text>
           <View style={styles.spacer3} />
@@ -190,7 +200,7 @@ export default function ProfileScreen() {
 
         {/* Personality Ratings */}
         <View style={styles.personalityCont}>
-          <Text style={[styles.h3, { fontWeight: "bold", color: "white" }]}>
+          <Text style={[styles.h3, { fontWeight: 'bold', color: 'white' }]}>
             Personality Ratings
           </Text>
           <View style={styles.spacer3} />
@@ -209,21 +219,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // justifyContent: "center",
-    alignItems: "center",
+    alignItems: 'center',
   },
-  spacer: { height: 70, width: "100%" },
-  spacer2: { height: 20, width: "100%" },
-  spacer3: { height: 10, width: "100%" },
+  spacer: { height: 70, width: '100%' },
+  spacer2: { height: 20, width: '100%' },
+  spacer3: { height: 10, width: '100%' },
   header: {},
-  h1: { fontSize: 30, fontWeight: "bold" },
-  h2: { fontSize: 25, fontWeight: "bold" },
+  h1: { fontSize: 30, fontWeight: 'bold' },
+  h2: { fontSize: 25, fontWeight: 'bold' },
   h3: { fontSize: 20 },
   profileCont: {
     top: 10,
-    justifyContent: "center",
+    justifyContent: 'center',
     // borderWidth: 3,
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
   },
   displayPic: {
     width: 150,
@@ -231,24 +241,24 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   hobbiesCont: {
-    alignItems: "flex-start",
+    alignItems: 'flex-start',
     // borderWidth: 3,
-    width: "98%",
+    width: '98%',
     paddingHorizontal: 10,
     paddingVertical: 5,
-    backgroundColor: "#ECE9E9",
+    backgroundColor: '#ECE9E9',
     borderRadius: 10,
   },
   itemsCont: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   personalityCont: {
-    alignItems: "flex-start",
+    alignItems: 'flex-start',
     // borderWidth: 3,
-    backgroundColor: "#1C4C4E",
+    backgroundColor: '#1C4C4E',
     borderRadius: 10,
-    width: "98%",
+    width: '98%',
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
