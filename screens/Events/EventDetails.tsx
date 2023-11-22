@@ -135,7 +135,7 @@ export default function EventDetails({ route }: { route: any }) {
       <ScrollView>
         <Text style={styles.Title}>{event.name}</Text>
         <Image
-          source={event.thumbnail ? { uri: event.thumbnail } : splash}
+          source={event.thumbnail ? { uri: event.thumbnail } : defaultProfilePicture}
           style={styles.Image}
         />
 
