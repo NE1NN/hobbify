@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState } from "react";
 import {
   Image,
   StyleSheet,
@@ -7,35 +7,36 @@ import {
   TouchableOpacity,
   TextInput,
   Platform,
+  ScrollView,
 } from "react-native";
-import * as ImagePicker from 'expo-image-picker';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../App';
+import * as ImagePicker from "expo-image-picker";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../App";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Button } from '@rneui/base';
-import { createEvent } from '../utils/api';
-import AuthContext from '../AuthContext';
+import { Button } from "@rneui/base";
+import { createEvent } from "../utils/api";
+import AuthContext from "../AuthContext";
 
-type Props = NativeStackScreenProps<RootStackParamList, 'CreateEvent'>;
+type Props = NativeStackScreenProps<RootStackParamList, "CreateEvent">;
 
 const CreateEvent = ({ navigation }: Props) => {
-  const [thumbnail, setThumbnail] = useState('');
-  const [name, setName] = useState('');
-  const [desc, setDesc] = useState('');
-  const [location, setLocation] = useState('');
-  const [members, setMembers] = useState('');
+  const [thumbnail, setThumbnail] = useState("");
+  const [name, setName] = useState("");
+  const [desc, setDesc] = useState("");
+  const [location, setLocation] = useState("");
+  const [members, setMembers] = useState("");
 
   const [date, setDate] = useState<Date>(new Date());
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
-  
+
   const [time, setTime] = useState<Date>(new Date());
   const [showTimePicker, setShowTimePicker] = useState<boolean>(false);
 
-  const [isPublic, setIsPublic] = useState(false)
+  const [isPublic, setIsPublic] = useState(false);
 
   const contextValue = useContext(AuthContext);
   if (!contextValue) {
-    throw new Error('No value')
+    throw new Error("No value");
   }
 
   const creatorId = contextValue.userId;
@@ -82,142 +83,143 @@ const CreateEvent = ({ navigation }: Props) => {
       date,
       time,
       isPublic,
-      membersLimit: Number(members)
+      membersLimit: Number(members),
     });
-    navigation.navigate('History')
-  }
+    navigation.navigate("History");
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.titleText}>Create Event</Text>
-      <View style={styles.imageContainer}>
-        {thumbnail !== "" ? (
-          <Image source={{ uri: thumbnail }} style={styles.image} />
-        ) : undefined}
-      </View>
-      <TouchableOpacity style={styles.editPictureButton} onPress={pickImage}>
-        <Text style={styles.editPictureText}>Edit Picture</Text>
-      </TouchableOpacity>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputTitle}>Name</Text>
-        <TextInput style={styles.input} value={name} onChangeText={setName} />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputTitle}>Description</Text>
-        <TextInput
-          style={[styles.input, styles.multilineInput]}
-          value={desc}
-          onChangeText={setDesc}
-          multiline={true}
-          numberOfLines={4}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputTitle}>Date</Text>
-        <TouchableOpacity
-          style={styles.dateInput}
-          onPress={() => setShowDatePicker(true)}
-        >
-          <Text style={styles.dateText}>{formatDate(date)}</Text>
+    <ScrollView>
+      <View style={styles.container}>
+        <View style={styles.imageContainer}>
+          {thumbnail !== "" ? (
+            <Image source={{ uri: thumbnail }} style={styles.image} />
+          ) : undefined}
+        </View>
+        <TouchableOpacity style={styles.editPictureButton} onPress={pickImage}>
+          <Text style={styles.editPictureText}>Edit Picture</Text>
         </TouchableOpacity>
-      </View>
 
-      {/* Show date picker as a modal popup */}
-      {showDatePicker && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={date}
-          mode="date"
-          is24Hour={true}
-          display="default"
-          onChange={onDateChange}
-        />
-      )}
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputTitle}>Name</Text>
+          <TextInput style={styles.input} value={name} onChangeText={setName} />
+        </View>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputTitle}>Time</Text>
-        <TouchableOpacity
-          style={styles.timeInput}
-          onPress={() => setShowTimePicker(true)}
-        >
-          <Text style={styles.timeText}>{formatTime(time)}</Text>
-        </TouchableOpacity>
-      </View>
-      {showTimePicker && (
-        <DateTimePicker
-          testID="timePicker"
-          value={time}
-          mode="time"
-          is24Hour={true}
-          display="default"
-          onChange={onTimeChange}
-        />
-      )}
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputTitle}>Description</Text>
+          <TextInput
+            style={[styles.input, styles.multilineInput]}
+            value={desc}
+            onChangeText={setDesc}
+            multiline={true}
+            numberOfLines={4}
+          />
+        </View>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputTitle}>Location</Text>
-        <TextInput
-          style={styles.input}
-          value={location}
-          onChangeText={setLocation}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputTitle}>Members</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={members}
-          onChangeText={setMembers}
-        />
-      </View>
-      <View style={styles.segmentedControlContainer}>
-        <TouchableOpacity
-          style={[
-            styles.segment,
-            isPublic === false ? styles.segmentSelected : null,
-          ]}
-          onPress={() => setIsPublic(false)}
-        >
-          <Text
-            style={[
-              styles.segmentText,
-              isPublic === false ? styles.segmentTextSelected : null,
-            ]}
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputTitle}>Date</Text>
+          <TouchableOpacity
+            style={styles.dateInput}
+            onPress={() => setShowDatePicker(true)}
           >
-            Private
-          </Text>
-        </TouchableOpacity>
+            <Text style={styles.dateText}>{formatDate(date)}</Text>
+          </TouchableOpacity>
+        </View>
 
-        <TouchableOpacity
-          style={[styles.segment, isPublic ? styles.segmentSelected : null]}
-          onPress={() => setIsPublic(true)}
-        >
-          <Text
-            style={[
-              styles.segmentText,
-              isPublic ? styles.segmentTextSelected : null,
-            ]}
+        {/* Show date picker as a modal popup */}
+        {showDatePicker && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={date}
+            mode="date"
+            is24Hour={true}
+            display="default"
+            onChange={onDateChange}
+          />
+        )}
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputTitle}>Time</Text>
+          <TouchableOpacity
+            style={styles.timeInput}
+            onPress={() => setShowTimePicker(true)}
           >
-            Public
-          </Text>
+            <Text style={styles.timeText}>{formatTime(time)}</Text>
+          </TouchableOpacity>
+        </View>
+        {showTimePicker && (
+          <DateTimePicker
+            testID="timePicker"
+            value={time}
+            mode="time"
+            is24Hour={true}
+            display="default"
+            onChange={onTimeChange}
+          />
+        )}
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputTitle}>Location</Text>
+          <TextInput
+            style={styles.input}
+            value={location}
+            onChangeText={setLocation}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputTitle}>Members</Text>
+          <TextInput
+            style={styles.input}
+            keyboardType="numeric"
+            value={members}
+            onChangeText={setMembers}
+          />
+        </View>
+        <View style={styles.segmentedControlContainer}>
+          <TouchableOpacity
+            style={[
+              styles.segment,
+              isPublic === false ? styles.segmentSelected : null,
+            ]}
+            onPress={() => setIsPublic(false)}
+          >
+            <Text
+              style={[
+                styles.segmentText,
+                isPublic === false ? styles.segmentTextSelected : null,
+              ]}
+            >
+              Private
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.segment, isPublic ? styles.segmentSelected : null]}
+            onPress={() => setIsPublic(true)}
+          >
+            <Text
+              style={[
+                styles.segmentText,
+                isPublic ? styles.segmentTextSelected : null,
+              ]}
+            >
+              Public
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={styles.submit} onPress={handleCreateEvent}>
+          <Text style={{ fontSize: 15, color: "#fff" }}>Create Event</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.submit} onPress={handleCreateEvent}>
-        <Text style={{ fontSize: 15, color: '#fff' }}>Create Event</Text>
-      </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 60,
+    paddingTop: 30,
     alignItems: "center",
     justifyContent: "flex-start",
   },
@@ -304,7 +306,7 @@ const styles = StyleSheet.create({
     borderColor: "#000",
     borderRadius: 10,
     overflow: "hidden",
-    marginTop: 10
+    marginTop: 10,
   },
   segment: {
     paddingVertical: 8,
@@ -322,13 +324,13 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   submit: {
-    width: '40%',
-    backgroundColor: '#28B67E',
+    width: "40%",
+    backgroundColor: "#28B67E",
     padding: 10,
     borderRadius: 15,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 10,
-  }
+  },
 });
 
 export default CreateEvent;

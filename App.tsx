@@ -2,17 +2,18 @@ import { Settings, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "./screens/HomeScreen";
-import Navbar from "./components/Navbar";
 import SettingsScreen from "./screens/SettingsScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import EventDetails from "./screens/Events/EventDetails";
 import RatingScreen from "./screens/RatingScreen";
+import Navbar from "./components/Navbar";
 import Register from "./screens/Register";
 import Login from "./screens/Login";
 import { useState, useEffect } from "react";
 import AuthContext from "./AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import EventDetails from "./screens/Events/EventDetails";
+import CreateEvent from "./screens/CreateEvent";
 
 export type RootStackParamList = {
   Register: undefined;
@@ -74,6 +75,7 @@ export default function App() {
               />
               <Stack.Screen name="EventDetails" component={EventDetails} />
               <Stack.Screen name="RatingScreen" component={RatingScreen} />
+              <Stack.Screen name="CreateEvent" component={CreateEvent} />
             </>
           ) : (
             <>
