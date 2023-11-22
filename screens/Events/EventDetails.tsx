@@ -103,7 +103,7 @@ export default function EventDetails({ route }: { route: any }) {
         if (snapshot.exists()) {
           const eventData = snapshot.data() as Event;
           setEvent(eventData);
-          console.log(eventData);
+          // console.log(eventData);
         } else {
           console.log("no event");
         }
@@ -198,7 +198,7 @@ export default function EventDetails({ route }: { route: any }) {
                       member.profilePicture === undefined ||
                       member.profilePicture === null
                         ? defaultProfilePicture
-                        : member.profilePicture
+                        : {uri: member.profilePicture}
                     }                    style={styles.MemberProfilePicture}
                   />
                 ))}

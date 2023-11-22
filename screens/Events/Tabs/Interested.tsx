@@ -28,7 +28,7 @@ export default function Interested() {
       const events = await getInterestedEvents(userId);
       if (events) {
         setEvents(events);
-        console.log(events)
+        // console.log(events)
       }
     };
     populateEvents();
@@ -44,7 +44,7 @@ export default function Interested() {
         <Text style={styles.sectionHeading}>Interested Events</Text>
         <View style={styles.eventsContainer}>
           {events.map((event, idx) => {
-            console.log(event)
+            // console.log(event)
             return <EventCard
               key={idx}
               name={event.name}

@@ -346,7 +346,7 @@ export const updateProfPic = async (newProfPic: string, userId: number) => {
     const userDoc = querySnapshot.docs[0];
     const userDocRef = userDoc.ref;
 
-    await updateDoc(userDocRef, { profPic: newProfPic });
+    await updateDoc(userDocRef, { profilePicture: newProfPic });
     console.log("Profile picture updated successfully");
   } catch (err) {
     console.error("Failed updating profile picture", err);

@@ -17,7 +17,6 @@ export default function UserEventCard({ uId, eventId }) {
       if (snapshot.exists()) {
         const eventData = snapshot.data() as Event;
         setEvent(eventData);
-        console.log(eventData);
       } else {
         console.log("no event");
       }
@@ -36,7 +35,7 @@ export default function UserEventCard({ uId, eventId }) {
     >();
 
   const handlePress = async () => {
-    console.log("eventId member", eventId);
+    // console.log("eventId member", eventId);
     navigation.navigate("RatingScreen", { id: uId, eventId: eventId });
   };
 

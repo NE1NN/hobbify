@@ -18,7 +18,7 @@ export default function Ongoing() {
     const populateEvents = async () => {
       const events = await getUpcomingEvents();
       setEvents(events);
-      console.log(events)
+      // console.log(events)
     };
     populateEvents();
 

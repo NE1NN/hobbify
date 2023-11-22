@@ -65,9 +65,9 @@ export default function History({ navigation }: Props) {
     }, [])
   );
 
-  useEffect(() => {
-    console.log('user',users)
-  }, [users]);
+  // useEffect(() => {
+  //   console.log('user',users)
+  // }, [users]);
 
   return (
     <SafeAreaView style={styles.SafeAreaView}>
